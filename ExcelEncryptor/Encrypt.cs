@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,10 +20,28 @@ public static class Encrypt
 
     public static void FromBytesToFile(byte[] wbByte, string outputPath, string password)
     {
-        var (xmlDoc, encryptionKey, keySalt, integritySalt) = GenerateEncryptionInfo(password);
-        var encryptedPackage = EncryptPackage(wbByte, encryptionKey, keySalt);
-        UpdateIntegrityHmac(encryptedPackage, wbByte.Length, encryptionKey, keySalt, integritySalt, xmlDoc);
-        CreateEncryptedFile(outputPath, xmlDoc, encryptedPackage);
+        ValidateEncryptionParameters();
+
+        if (wbByte == null || wbByte.Length == 0)
+            throw new ArgumentException("Input data cannot be null or empty", nameof(wbByte));
+
+        if (string.IsNullOrEmpty(password))
+            throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
+        if (password.Length > 255)
+            throw new ArgumentException("Password is too long (max 255 characters)", nameof(password));
+
+        try
+        {
+            var (xmlDoc, encryptionKey, keySalt, integritySalt) = GenerateEncryptionInfo(password);
+            var encryptedPackage = EncryptPackage(wbByte, encryptionKey, keySalt);
+            UpdateIntegrityHmac(encryptedPackage, wbByte.Length, encryptionKey, keySalt, integritySalt, xmlDoc);
+            CreateEncryptedFile(outputPath, xmlDoc, encryptedPackage);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("Failed to encrypt file", ex);
+        }
     }
 
     public static void FromFileToFile(string inputPath, string outputPath, string password)
@@ -31,7 +50,6 @@ public static class Encrypt
         FromBytesToFile(packageData, outputPath, password);
     }
 
-    // === EncryptionInfo 生成（HMAC鍵の下準備まで） ===
     private static (XDocument, byte[], byte[], byte[]) GenerateEncryptionInfo(string password)
     {
         var keySalt = RandomBytes(SaltSize); // keyData.saltValue
@@ -49,9 +67,16 @@ public static class Encrypt
         byte[] kCryptoKeyBlock = { 0x14, 0x6E, 0x0B, 0xE7, 0xAB, 0xAC, 0xD0, 0xD6 };
 
         var encryptedVerifier = HashInput(pwHash, verifierSalt, kVerifierInputBlock, verifier, KeySize / 8);
-        var verifierHash = SHA1.Create().ComputeHash(verifier);
-        var encryptedVerifierHash =
-            HashInput(pwHash, verifierSalt, kHashedVerifierBlock, verifierHash, KeySize / 8);
+
+        byte[] verifierHash;
+        using (var sha = SHA1.Create())
+        {
+            verifierHash = sha.ComputeHash(verifier);
+        }
+
+        var encryptedVerifierHash = HashInput(pwHash, verifierSalt, kHashedVerifierBlock, verifierHash, KeySize / 8);
+
+
         var encryptedKey = HashInput(pwHash, verifierSalt, kCryptoKeyBlock, keySpec, KeySize / 8);
 
         // dataIntegrity: encryptedHmacKey だけ先に作る
@@ -113,7 +138,6 @@ public static class Encrypt
         return (xmlDoc, encryptionKey, keySalt, integritySalt);
     }
 
-    // === Integrity HMAC を計算して XML を更新 ===
     private static void UpdateIntegrityHmac(byte[] encryptedPackage, int oleStreamSize, byte[] encryptionKey,
         byte[] keySalt, byte[] integritySalt, XDocument xmlDoc)
     {
@@ -139,68 +163,125 @@ public static class Encrypt
                 ?.SetAttributeValue("encryptedHmacValue", Convert.ToBase64String(encryptedHmacValue));
     }
 
-    // === ここまでが前半。後半で Decrypt/EncryptPackage/CFB 書き出し/補助関数 を続けます ===
     // === Decrypt 実装 ===
     public static byte[] Decrypt(string encryptedPath, string password)
     {
+        if (!File.Exists(encryptedPath))
+            throw new FileNotFoundException("Encrypted file not found", encryptedPath);
+
+        if (string.IsNullOrEmpty(password))
+            throw new ArgumentException("Password cannot be null or empty", nameof(password));
+
         using var root = RootStorage.OpenRead(encryptedPath);
-        using var encInfoStream = root.OpenStream("EncryptionInfo");
-        using var reader = new BinaryReader(encInfoStream);
-        var xmlBytes = reader.ReadBytes((int)(encInfoStream.Length - 8));
-        var xmlString = Encoding.UTF8.GetString(xmlBytes);
 
-        // XMLからsalt等を抽出（簡易パーサー）
-        var keySaltMatch = Regex.Match(xmlString, @"<keyData[^>]*saltValue=""([^""]+)""");
-        var verifierSaltMatch = Regex.Match(xmlString, @"<p:encryptedKey[^>]*saltValue=""([^""]+)""");
-        var spinCountMatch = Regex.Match(xmlString, @"spinCount=""(\d+)""");
-        var encryptedKeyMatch = Regex.Match(xmlString, @"encryptedKeyValue=""([^""]+)""");
-
-
-        if (!keySaltMatch.Success || !verifierSaltMatch.Success || !spinCountMatch.Success ||
-            !encryptedKeyMatch.Success)
-            throw new InvalidProgramException("暗号化情報の解析に失敗");
-
-        var keySalt = Convert.FromBase64String(keySaltMatch.Groups[1].Value);
-        var verifierSalt = Convert.FromBase64String(verifierSaltMatch.Groups[1].Value);
-        var spinCount = int.Parse(spinCountMatch.Groups[1].Value);
-        var encryptedKey = Convert.FromBase64String(encryptedKeyMatch.Groups[1].Value);
-
-        var pwHash = HashPassword(password, verifierSalt, spinCount);
-        byte[] kCryptoKeyBlock = { 0x14, 0x6e, 0x0b, 0xe7, 0xab, 0xac, 0xd0, 0xd6 };
-        var intermedKey = GenerateKey(pwHash, kCryptoKeyBlock, KeySize / 8);
-        var iv = GenerateIv(verifierSalt, null, BlockSize);
-
-        byte[] decryptionKey;
-        using (var aes = Aes.Create())
+        // EncryptionInfo の読み取り
+        CfbStream encInfoStream;
+        try
         {
-            aes.Key = intermedKey;
-            aes.IV = iv;
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.None;
-            using (var dec = aes.CreateDecryptor())
-            {
-                decryptionKey = dec.TransformFinalBlock(encryptedKey, 0, encryptedKey.Length);
-            }
+            encInfoStream = root.OpenStream("EncryptionInfo");
+        }
+        catch
+        {
+            throw new InvalidOperationException("File is not encrypted (EncryptionInfo missing)");
         }
 
-        var actualKey = new byte[KeySize / 8];
-        Array.Copy(decryptionKey, actualKey, actualKey.Length);
-
-        using (var encPackageStream = root.OpenStream("EncryptedPackage"))
-        using (var br = new BinaryReader(encPackageStream))
+        using (encInfoStream)
+        using (var reader = new BinaryReader(encInfoStream))
         {
-            var streamSize = br.ReadInt64();
-            using (var ms = new MemoryStream())
+            // バージョン情報とフラグの読み取り
+            var versionMajor = reader.ReadUInt16();
+            var versionMinor = reader.ReadUInt16();
+            reader.ReadUInt32();
+
+            if (versionMajor != 4 || versionMinor != 4)
+                throw new NotSupportedException($"Unsupported encryption version: {versionMajor}.{versionMinor}");
+
+            // XML部分の読み取りとパース
+            var xmlBytes = reader.ReadBytes((int)(encInfoStream.Length - 8));
+            var xmlString = Encoding.UTF8.GetString(xmlBytes);
+
+            // XMLから必要な情報を抽出
+            var keySaltMatch = Regex.Match(xmlString, @"<keyData[^>]*saltValue=""([^""]+)""");
+            var verifierSaltMatch = Regex.Match(xmlString, @"<p:encryptedKey[^>]*saltValue=""([^""]+)""");
+            var spinCountMatch = Regex.Match(xmlString, @"spinCount=""(\d+)""");
+            var encryptedKeyMatch = Regex.Match(xmlString, @"encryptedKeyValue=""([^""]+)""");
+
+            if (!keySaltMatch.Success || !verifierSaltMatch.Success || !spinCountMatch.Success ||
+                !encryptedKeyMatch.Success)
+                throw new InvalidOperationException("fail: check encrypted info");
+
+            var keySalt = Convert.FromBase64String(keySaltMatch.Groups[1].Value);
+            var verifierSalt = Convert.FromBase64String(verifierSaltMatch.Groups[1].Value);
+            var spinCount = int.Parse(spinCountMatch.Groups[1].Value);
+            var encryptedKey = Convert.FromBase64String(encryptedKeyMatch.Groups[1].Value);
+
+            var xmlDoc = XDocument.Parse(xmlString);
+
+            // パスワード検証
+            if (!VerifyPassword(password, xmlDoc, xmlString))
+                throw new UnauthorizedAccessException("Invalid password");
+
+            // 暗号化キーの復号化
+            var pwHash = HashPassword(password, verifierSalt, spinCount);
+            byte[] kCryptoKeyBlock = { 0x14, 0x6E, 0x0B, 0xE7, 0xAB, 0xAC, 0xD0, 0xD6 };
+            var keyIntermedKey = GenerateKey(pwHash, kCryptoKeyBlock, KeySize / 8);
+            var keyIv = GenerateIv(verifierSalt, null, BlockSize);
+
+            byte[] actualKey;
+            using (var aes = Aes.Create())
             {
+                aes.Key = keyIntermedKey;
+                aes.IV = keyIv;
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.None;
+                using var dec = aes.CreateDecryptor();
+                var decryptionKey = dec.TransformFinalBlock(encryptedKey, 0, encryptedKey.Length);
+                actualKey = new byte[KeySize / 8];
+                Array.Copy(decryptionKey, actualKey, actualKey.Length);
+            }
+
+            // EncryptedPackage の読み取り（一度だけ）
+            CfbStream encPackageStream;
+            try
+            {
+                encPackageStream = root.OpenStream("EncryptedPackage");
+            }
+            catch
+            {
+                throw new InvalidOperationException("EncryptedPackage stream not found");
+            }
+
+            byte[] encryptedPackageData;
+            using (encPackageStream)
+            {
+                encryptedPackageData = new byte[encPackageStream.Length];
+                _ = encPackageStream.Read(encryptedPackageData, 0, encryptedPackageData.Length);
+            }
+
+            // EncryptedPackage の復号化
+            byte[] decryptedData;
+            long streamSize;
+
+            using (var ms = new MemoryStream(encryptedPackageData))
+            using (var br = new BinaryReader(ms))
+            {
+                streamSize = br.ReadInt64();
+
+                using var outMs = new MemoryStream();
                 var block = 0;
                 var remaining = streamSize;
+
                 while (remaining > 0)
                 {
                     var segSize = (int)Math.Min(SegmentLength, remaining);
                     var isLast = remaining <= SegmentLength;
 
-                    var encryptedSeg =
-                        isLast ? br.ReadBytes(PadLen((int)remaining)) : br.ReadBytes(SegmentLength);
+                    // 暗号化されたセグメントの読み取り
+                    var encryptedSeg = isLast
+                        ? br.ReadBytes(PadLen((int)remaining))
+                        : br.ReadBytes(SegmentLength);
+
+                    // ブロック番号からIVを生成
                     var blockKey = BitConverter.GetBytes(block);
                     var segIv = GenerateIv(keySalt, blockKey, BlockSize);
 
@@ -210,23 +291,53 @@ public static class Encrypt
                         aes.IV = segIv;
                         aes.Mode = CipherMode.CBC;
                         aes.Padding = isLast ? PaddingMode.PKCS7 : PaddingMode.None;
-                        using (var dec = aes.CreateDecryptor())
-                        {
-                            var decSeg = dec.TransformFinalBlock(encryptedSeg, 0, encryptedSeg.Length);
-                            ms.Write(decSeg, 0, Math.Min(segSize, decSeg.Length));
-                        }
+                        using var dec = aes.CreateDecryptor();
+                        var decSeg = dec.TransformFinalBlock(encryptedSeg, 0, encryptedSeg.Length);
+                        outMs.Write(decSeg, 0, Math.Min(segSize, decSeg.Length));
                     }
 
                     remaining -= segSize;
                     block++;
                 }
 
-                return ms.ToArray();
+                decryptedData = outMs.ToArray();
+            }
+
+            // HMAC整合性検証
+            if (!VerifyIntegrity(encryptedPackageData, (int)streamSize, actualKey, keySalt, xmlString))
+                throw new InvalidOperationException("Data integrity check failed - file may be corrupted or tampered");
+
+            return decryptedData;
+        }
+    }
+
+
+    // === CFBファイル書き込み (DataSpaces含む) ===
+    private static void CreateEncryptedFile(string outputPath, XDocument encryptionInfo, byte[] encryptedData)
+    {
+        using var root = RootStorage.Create(outputPath);
+        using (var s = root.CreateStream("EncryptedPackage"))
+        {
+            s.Write(encryptedData, 0, encryptedData.Length);
+        }
+
+        CreateDataSpacesStructure(root);
+        using (var s2 = root.CreateStream("EncryptionInfo"))
+        using (var bw = new BinaryWriter(s2))
+        {
+            bw.Write((ushort)4);
+            bw.Write((ushort)4);
+            bw.Write((uint)0x40);
+            if (encryptionInfo.Root != null)
+            {
+                var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                          encryptionInfo.Root.ToString(SaveOptions.DisableFormatting);
+                xml = xml.Replace(" />", "/>");
+                bw.Write(Encoding.UTF8.GetBytes(xml));
             }
         }
     }
 
-    // === パッケージ暗号化 ===
     private static byte[] EncryptPackage(byte[] packageData, byte[] encryptionKey, byte[] keySalt)
     {
         using var ms = new MemoryStream();
@@ -268,31 +379,6 @@ public static class Encrypt
         return ms.ToArray();
     }
 
-    // === CFBファイル書き込み (DataSpaces含む) ===
-    private static void CreateEncryptedFile(string outputPath, XDocument encryptionInfo, byte[] encryptedData)
-    {
-        using var root = RootStorage.Create(outputPath);
-        using (var s = root.CreateStream("EncryptedPackage"))
-        {
-            s.Write(encryptedData, 0, encryptedData.Length);
-        }
-
-        CreateDataSpacesStructure(root);
-        using (var s2 = root.CreateStream("EncryptionInfo"))
-        using (var bw = new BinaryWriter(s2))
-        {
-            bw.Write((ushort)4);
-            bw.Write((ushort)4);
-            bw.Write((uint)0x40);
-            if (encryptionInfo.Root != null)
-            {
-                var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-                          encryptionInfo.Root.ToString(SaveOptions.DisableFormatting);
-                xml = xml.Replace(" />", "/>");
-                bw.Write(Encoding.UTF8.GetBytes(xml));
-            }
-        }
-    }
 
     private static void CreateDataSpacesStructure(RootStorage root)
     {
@@ -371,7 +457,6 @@ public static class Encrypt
         for (var i = 0; i < pad; i++) bw.Write((byte)0);
     }
 
-    // === 汎用ヘルパー ===
     private static byte[] RandomBytes(int n)
     {
         var b = new byte[n];
@@ -394,23 +479,50 @@ public static class Encrypt
         return (len + 15) / 16 * 16;
     }
 
+    private static void ValidateEncryptionParameters()
+    {
+        if (KeySize != 128 && KeySize != 192 && KeySize != 256)
+#pragma warning disable CS0162 // 到達できないコードが検出されました
+            throw new InvalidOperationException($"Invalid key size: {KeySize}");
+#pragma warning restore CS0162 // 到達できないコードが検出されました
+
+        if (BlockSize != 16)
+#pragma warning disable CS0162 // 到達できないコードが検出されました
+            throw new InvalidOperationException($"Invalid block size: {BlockSize}");
+#pragma warning restore CS0162 // 到達できないコードが検出されました
+
+        if (SpinCount < 1)
+#pragma warning disable CS0162 // 到達できないコードが検出されました
+            throw new InvalidOperationException($"Invalid spin count: {SpinCount}");
+#pragma warning restore CS0162 // 到達できないコードが検出されました
+    }
+
     private static byte[] HashPassword(string pw, byte[] salt, int spin)
     {
         var pwb = Encoding.Unicode.GetBytes(pw);
         using var sha = SHA1.Create();
-        sha.TransformBlock(salt, 0, salt.Length, null, 0);
-        sha.TransformFinalBlock(pwb, 0, pwb.Length);
-        var h = sha.Hash;
-        for (var i = 0; i < spin; i++)
-        {
-            sha.Initialize();
-            var iter = BitConverter.GetBytes(i);
-            sha.TransformBlock(iter, 0, 4, null, 0);
-            sha.TransformFinalBlock(h, 0, h.Length);
-            h = sha.Hash;
-        }
 
-        return h;
+        try
+        {
+            sha.TransformBlock(salt, 0, salt.Length, null, 0);
+            sha.TransformFinalBlock(pwb, 0, pwb.Length);
+            var h = (byte[])sha.Hash.Clone(); // Clone to avoid issues
+
+            for (var i = 0; i < spin; i++)
+            {
+                sha.Initialize();
+                var iter = BitConverter.GetBytes(i);
+                sha.TransformBlock(iter, 0, 4, null, 0);
+                sha.TransformFinalBlock(h, 0, h.Length);
+                h = (byte[])sha.Hash.Clone();
+            }
+
+            return h;
+        }
+        finally
+        {
+            Array.Clear(pwb, 0, pwb.Length);
+        }
     }
 
     private static byte[] HashInput(byte[] pwHash, byte[] salt, byte[] blk, byte[] input, int keySize)
@@ -459,5 +571,112 @@ public static class Encrypt
         aes.Mode = CipherMode.CBC;
         aes.Padding = PaddingMode.None;
         return aes.CreateEncryptor().TransformFinalBlock(d, 0, d.Length);
+    }
+
+    private static bool VerifyPassword(string password, XDocument xmlDoc, string xmlString)
+    {
+        var encVerifierMatch = Regex.Match(xmlString, @"encryptedVerifierHashInput=""([^""]+)""");
+        var encVerifierHashMatch = Regex.Match(xmlString, @"encryptedVerifierHashValue=""([^""]+)""");
+        var verifierSaltMatch = Regex.Match(xmlString, @"<p:encryptedKey[^>]*saltValue=""([^""]+)""");
+        var spinCountMatch = Regex.Match(xmlString, @"spinCount=""(\d+)""");
+
+        if (!encVerifierMatch.Success || !encVerifierHashMatch.Success) return false;
+
+        var encryptedVerifier = Convert.FromBase64String(encVerifierMatch.Groups[1].Value);
+        var encryptedVerifierHash = Convert.FromBase64String(encVerifierHashMatch.Groups[1].Value);
+        var verifierSalt = Convert.FromBase64String(verifierSaltMatch.Groups[1].Value);
+        var spinCount = int.Parse(spinCountMatch.Groups[1].Value);
+
+        var pwHash = HashPassword(password, verifierSalt, spinCount);
+
+        byte[] kVerifierInputBlock = { 0xFE, 0xA7, 0xD2, 0x76, 0x3B, 0x4B, 0x9E, 0x79 };
+        var intermedKey = GenerateKey(pwHash, kVerifierInputBlock, KeySize / 8);
+        var iv = GenerateIv(verifierSalt, null, BlockSize);
+
+        byte[] decryptedVerifier;
+        using (var aes = Aes.Create())
+        {
+            aes.Key = intermedKey;
+            aes.IV = iv;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.None;
+            using var dec = aes.CreateDecryptor();
+            decryptedVerifier = dec.TransformFinalBlock(encryptedVerifier, 0, encryptedVerifier.Length);
+        }
+
+        // 修正：usingを追加
+        byte[] verifierHash;
+        using (var sha = SHA1.Create())
+        {
+            verifierHash = sha.ComputeHash(decryptedVerifier, 0, SaltSize);
+        }
+
+        byte[] kHashedVerifierBlock = { 0xD7, 0xAA, 0x0F, 0x6D, 0x30, 0x61, 0x34, 0x4E };
+        intermedKey = GenerateKey(pwHash, kHashedVerifierBlock, KeySize / 8);
+
+        byte[] decryptedVerifierHash;
+        using (var aes = Aes.Create())
+        {
+            aes.Key = intermedKey;
+            aes.IV = iv;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.None;
+            using var dec = aes.CreateDecryptor();
+            decryptedVerifierHash = dec.TransformFinalBlock(encryptedVerifierHash, 0, encryptedVerifierHash.Length);
+        }
+
+        return verifierHash.Take(HashSize).SequenceEqual(decryptedVerifierHash.Take(HashSize));
+    }
+
+    private static bool VerifyIntegrity(byte[] encryptedPackage, int oleStreamSize,
+        byte[] encryptionKey, byte[] keySalt, string xmlString)
+    {
+        var encHmacKeyMatch = Regex.Match(xmlString, @"encryptedHmacKey=""([^""]+)""");
+        var encHmacValueMatch = Regex.Match(xmlString, @"encryptedHmacValue=""([^""]+)""");
+
+        if (!encHmacKeyMatch.Success || !encHmacValueMatch.Success) return false;
+
+        var encryptedHmacKey = Convert.FromBase64String(encHmacKeyMatch.Groups[1].Value);
+        var encryptedHmacValue = Convert.FromBase64String(encHmacValueMatch.Groups[1].Value);
+
+        // Decrypt HMAC key
+        byte[] kIntegrityKeyBlock = { 0x5F, 0xB2, 0xAD, 0x01, 0x0C, 0xB9, 0xE1, 0xF6 };
+        var ivKey = GenerateIv(keySalt, kIntegrityKeyBlock, BlockSize);
+        byte[] hmacKey;
+        using (var aes = Aes.Create())
+        {
+            aes.Key = encryptionKey;
+            aes.IV = ivKey;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.None;
+            hmacKey = aes.CreateDecryptor().TransformFinalBlock(encryptedHmacKey, 0, encryptedHmacKey.Length);
+        }
+
+        hmacKey = hmacKey.Take(HashSize).ToArray();
+
+        // Calculate HMAC
+        using var hmac = new HMACSHA1(hmacKey);
+        var sizeBytes = BitConverter.GetBytes((long)oleStreamSize);
+        hmac.TransformBlock(sizeBytes, 0, 8, null, 0);
+        var body = new byte[encryptedPackage.Length - 8];
+        Buffer.BlockCopy(encryptedPackage, 8, body, 0, body.Length);
+        hmac.TransformFinalBlock(body, 0, body.Length);
+
+        // Decrypt expected HMAC value
+        byte[] kIntegrityValueBlock = { 0xA0, 0x67, 0x7F, 0x02, 0xB2, 0x2C, 0x84, 0x33 };
+        var ivVal = GenerateIv(keySalt, kIntegrityValueBlock, BlockSize);
+        byte[] expectedHmac;
+        using (var aes = Aes.Create())
+        {
+            aes.Key = encryptionKey;
+            aes.IV = ivVal;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.None;
+            expectedHmac = aes.CreateDecryptor().TransformFinalBlock(encryptedHmacValue, 0, encryptedHmacValue.Length);
+        }
+
+        expectedHmac = expectedHmac.Take(HashSize).ToArray();
+
+        return hmac.Hash.SequenceEqual(expectedHmac);
     }
 }
