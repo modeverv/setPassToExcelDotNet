@@ -13,9 +13,15 @@ using OpenMcdf;
     {
         static void Main(string[] args)
         {
-            var inputPath = "/Users/seijiro/Downloads/a.xlsx";
-            var outputPath = "/Users/seijiro/Downloads/b.xlsx";
+            //var inputPath = "/Users/seijiro/Downloads/a.xlsx";
+            //var outputPath = "/Users/seijiro/Downloads/b.xlsx";
+            string projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+            string inputPath  = Path.Combine(projectDir, "a.xlsx");
+            string outputPath = Path.Combine(projectDir, "b.xlsx");
+            string testFilePath = Path.Combine(projectDir, "poi_b.xlsx");
+
             var password = "pass";
+
             try
             {
                 ExcelEncryptor.Encrypt(inputPath, outputPath, password);
@@ -23,10 +29,10 @@ using OpenMcdf;
 
                 Console.WriteLine("\n=== 復号化テスト ===");
                 TestDecryption(outputPath, password, "dotnet版");
-                TestDecryption("/Users/seijiro/Downloads/poi_b.xlsx", password, "poi版");
+                TestDecryption(testFilePath, password, "poi版");
 
                 Console.WriteLine("\n=== 元ファイルとの比較 ===");
-                CompareWithOriginal(inputPath, outputPath, "/Users/seijiro/Downloads/poi_b.xlsx", password);
+                CompareWithOriginal(inputPath, outputPath, testFilePath, password);
             }
             catch (Exception ex)
             {
