@@ -2,9 +2,9 @@
 
 namespace npoitest;
 
-internal class Program
+internal static class Program
 {
-    private static void Main(string[] args)
+    private static void Main()
     {
         // ワークブックを作成
         var wb = new XSSFWorkbook();
@@ -13,11 +13,9 @@ internal class Program
         var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
         var outputPath = Path.Combine(projectDir, "sample_b.xlsx");
 
-        using (var ms = new MemoryStream())
-        {
-            wb.Write(ms);
-            var bytes = ms.ToArray();
-            ExcelEncryptor.EncryptFromBytes(bytes, outputPath, "pass");
-        }
+        using var ms = new MemoryStream();
+        wb.Write(ms);
+        var bytes = ms.ToArray();
+        ExcelEncryptor.ExcelEncryptor.EncryptFromBytes(bytes, outputPath, "pass");
     }
 }

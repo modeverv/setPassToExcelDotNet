@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\p2\p2.csproj"/>
+      <ProjectReference Include="..\ExcelEncryptor\ExcelEncryptor.csproj" />
     </ItemGroup>
 
 </Project>
