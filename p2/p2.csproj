@@ -9,11 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="OpenMcdf" Version="3.0.3"/>
+        <PackageReference Include="OpenMcdf" Version="3.0.3" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\ExcelEncryptor\ExcelEncryptor.csproj" />
     </ItemGroup>
+
+
 
 </Project>

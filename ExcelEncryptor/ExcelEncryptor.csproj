@@ -3,6 +3,13 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>ExcelEncryptor</PackageId>
+        <Version>0.0.1</Version>
+        <Authors>ikehata</Authors>
+        <Description>set password to excel</Description>
+        <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/modeverv/setPassToExcelDotNet</RepositoryUrl>
         <LangVersion>10</LangVersion>
     </PropertyGroup>
 
@@ -11,3 +18,11 @@
     </ItemGroup>
 
 </Project>
+
+
+
+
+
+
+
+

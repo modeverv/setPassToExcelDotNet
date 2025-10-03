@@ -16,6 +16,6 @@ internal static class Program
         using var ms = new MemoryStream();
         wb.Write(ms);
         var bytes = ms.ToArray();
-        ExcelEncryptor.ExcelEncryptor.EncryptFromBytes(bytes, outputPath, "pass");
+        ExcelEncryptor.Encrypt.FromBytesToFile(bytes, outputPath, "pass");
     }
 }

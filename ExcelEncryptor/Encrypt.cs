@@ -8,7 +8,7 @@ using OpenMcdf;
 
 namespace ExcelEncryptor;
 
-public static class ExcelEncryptor
+public static class Encrypt
 {
     private const int KeySize = 128; // AES-128
     private const int BlockSize = 16; // 16 bytes
@@ -17,7 +17,7 @@ public static class ExcelEncryptor
     private const int SegmentLength = 4096; // パッケージ暗号化のセグメント長
     private const int HashSize = 20; // SHA1 = 20 bytes
 
-    public static void EncryptFromBytes(byte[] wbByte, string outputPath, string password)
+    public static void FromBytesToFile(byte[] wbByte, string outputPath, string password)
     {
         var packageData = wbByte;
         var (xmlDoc, encryptionKey, keySalt, integritySalt) = GenerateEncryptionInfo(password);
@@ -26,10 +26,10 @@ public static class ExcelEncryptor
         CreateEncryptedFile(outputPath, xmlDoc, encryptedPackage);
     }
 
-    public static void EncryptFromFile(string inputPath, string outputPath, string password)
+    public static void FromFileToFile(string inputPath, string outputPath, string password)
     {
         var packageData = File.ReadAllBytes(inputPath);
-        EncryptFromBytes(packageData, outputPath, password);
+        FromBytesToFile(packageData, outputPath, password);
     }
 
     // === EncryptionInfo 生成（HMAC鍵の下準備まで） ===

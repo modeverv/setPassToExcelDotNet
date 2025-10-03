@@ -13,7 +13,7 @@ public static class Program
 
         try
         {
-            ExcelEncryptor.ExcelEncryptor.EncryptFromFile(inputPath, outputPath, password);
+            ExcelEncryptor.Encrypt.FromFileToFile(inputPath, outputPath, password);
             Console.WriteLine($"暗号化完了: {outputPath}");
 
             Console.WriteLine("\n=== 復号化テスト ===");
@@ -35,7 +35,7 @@ public static class Program
         try
         {
             Console.WriteLine($"\n{label} を復号化中...");
-            var decrypted = ExcelEncryptor.ExcelEncryptor.Decrypt(encryptedPath, password);
+            var decrypted = ExcelEncryptor.Encrypt.Decrypt(encryptedPath, password);
 
             Console.WriteLine($"  復号化後サイズ: {decrypted.Length} bytes");
             Console.WriteLine(
@@ -57,8 +57,8 @@ public static class Program
         try
         {
             var original = File.ReadAllBytes(originalPath);
-            var dotnetDecrypted = ExcelEncryptor.ExcelEncryptor.Decrypt(dotnetPath, password);
-            var poiDecrypted = ExcelEncryptor.ExcelEncryptor.Decrypt(poiPath, password);
+            var dotnetDecrypted = ExcelEncryptor.Encrypt.Decrypt(dotnetPath, password);
+            var poiDecrypted = ExcelEncryptor.Encrypt.Decrypt(poiPath, password);
 
             Console.WriteLine($"元ファイル: {original.Length} bytes");
             Console.WriteLine($"dotnet復号化: {dotnetDecrypted.Length} bytes");
