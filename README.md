@@ -4,7 +4,7 @@ like poi(https://github.com/apache/poi)
 
 ## dependency
 - OpenMcdf https://github.com/ironfede/openmcdf
-  - License MPL-2.0 https://github.com/ironfede/openmcdf?tab=MPL-2.0-1-ov-file#readme 
+    - License MPL-2.0 https://github.com/ironfede/openmcdf?tab=MPL-2.0-1-ov-file#readme
 
 ## run
 

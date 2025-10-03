@@ -8,7 +8,8 @@ public static class Program
 {
     private static void Main()
     {
-     TestNPoi();
+        TestFileMake();
+        TestNPoi();
     }
 
 
@@ -22,7 +23,7 @@ public static class Program
         var outPath = Path.Combine(projectDir, "protected.xlsx");
 
         using var outStream = new NpoiXlsxPasswordFileOutputStream(outPath, "pa");
-        wb.Write(outStream);  // ← NPOI がこのストリームに書き込み
+        wb.Write(outStream);
     }
 
     private static void TestFileMake()

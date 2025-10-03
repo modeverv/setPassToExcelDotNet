@@ -12,7 +12,7 @@
         <Description>Encrypt XLSX with a password (static utility API).</Description>
         <PackageTags>excel;xlsx;encryption;aes;password</PackageTags>
 
-        <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/modeverv/setPassToExcelDotNet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/modeverv/setPassToExcelDotNet</RepositoryUrl>
         <LangVersion>10</LangVersion>

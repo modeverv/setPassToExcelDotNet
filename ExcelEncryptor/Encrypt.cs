@@ -19,10 +19,9 @@ public static class Encrypt
 
     public static void FromBytesToFile(byte[] wbByte, string outputPath, string password)
     {
-        var packageData = wbByte;
         var (xmlDoc, encryptionKey, keySalt, integritySalt) = GenerateEncryptionInfo(password);
-        var encryptedPackage = EncryptPackage(packageData, encryptionKey, keySalt);
-        UpdateIntegrityHmac(encryptedPackage, packageData.Length, encryptionKey, keySalt, integritySalt, xmlDoc);
+        var encryptedPackage = EncryptPackage(wbByte, encryptionKey, keySalt);
+        UpdateIntegrityHmac(encryptedPackage, wbByte.Length, encryptionKey, keySalt, integritySalt, xmlDoc);
         CreateEncryptedFile(outputPath, xmlDoc, encryptedPackage);
     }
 
