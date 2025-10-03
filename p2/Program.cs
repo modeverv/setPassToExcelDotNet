@@ -1,10 +1,31 @@
 ﻿using ExcelEncryptor;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace p2;
 
 public static class Program
 {
     private static void Main()
+    {
+     TestNPoi();
+    }
+
+
+    private static void TestNPoi()
+    {
+        IWorkbook wb = new XSSFWorkbook();
+        var sheet = wb.CreateSheet("Sheet1");
+        sheet.CreateRow(0).CreateCell(0).SetCellValue("Hello");
+
+        var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+        var outPath = Path.Combine(projectDir, "protected.xlsx");
+
+        using var outStream = new NpoiXlsxPasswordFileOutputStream(outPath, "pa");
+        wb.Write(outStream);  // ← NPOI がこのストリームに書き込み
+    }
+
+    private static void TestFileMake()
     {
         var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
         var inputPath = Path.Combine(projectDir, "a.xlsx");
