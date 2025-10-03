@@ -8,10 +8,10 @@ like poi(https://github.com/apache/poi)
 
 ## run
 
-at p2 dir, run, and check b.xlsx(hard coding now)
+at ProjectForTest dir, run, and check b.xlsx(hard coding now)
 
 ```
-ers/seijiro/Sync/sync_work/me/SetPassToExceldotNet/p2/bin/Debug/net9.0/p2
+/Users/seijiro/Sync/sync_work/me/SetPassToExceldotNet/p2/bin/Debug/net9.0/p2
 暗号化完了: /Users/seijiro/Sync/sync_work/me/SetPassToExceldotNet/b.xlsx
 
 === 復号化テスト ===
