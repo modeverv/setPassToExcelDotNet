@@ -24,6 +24,7 @@ public static class Program
 
         using var outStream = new NpoiXlsxPasswordFileOutputStream(outPath, "pa");
         wb.Write(outStream);
+        Console.WriteLine("output end.");
     }
 
     private static void TestFileMake()
