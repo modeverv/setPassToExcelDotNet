@@ -450,7 +450,6 @@ public static class Encrypt
         var iv = new byte[bs];
         Array.Copy(d, iv, Math.Min(d.Length, bs));
         return iv;
-
     }
 
     private static byte[] EncryptWithAes(byte[] d, byte[] k, byte[] iv)

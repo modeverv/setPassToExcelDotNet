@@ -1,20 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <Nullable>enable</Nullable>
         <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
+
+        <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <LangVersion>10</LangVersion>
+
         <PackageId>ExcelEncryptor</PackageId>
-        <Version>0.0.1</Version>
-        <Authors>ikehata</Authors>
-        <Description>set password to excel</Description>
+        <Version>0.0.2</Version>
+        <Authors>seijiro ikehata</Authors>
+        <Description>Encrypt XLSX with a password (static utility API).</Description>
+        <PackageTags>excel;xlsx;encryption;aes;password</PackageTags>
+
         <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/modeverv/setPassToExcelDotNet</PackageProjectUrl>
         <RepositoryUrl>https://github.com/modeverv/setPassToExcelDotNet</RepositoryUrl>
         <LangVersion>10</LangVersion>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="OpenMcdf" Version="3.0.3" />
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="OpenMcdf" Version="3.0.3"/>
     </ItemGroup>
 
 </Project>

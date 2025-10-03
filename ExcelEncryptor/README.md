@@ -17,7 +17,7 @@ var bytes = ms.ToArray();
 ExcelEncryptor.Encrypt.FromBytesToFile(bytes, outputPath, "password-string");
 
 ```
-             
+
 ## from file to file
 
 ```csharp
@@ -25,7 +25,7 @@ var inputPath = "/path/to/input.xslx"
 var outputPath = "/path/to/output.xslx"
 ExcelEncryptor.Encrypt.FromFileToFile(inputPath, outputPath, "password-string");
 ```
-            
+
 # LICENSE
 
 MPL-2.0
