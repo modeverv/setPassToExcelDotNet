@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelEncryptor", "ExcelEncr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetCheck", "NugetCheck\NugetCheck.csproj", "{E5E34BE5-8830-42D9-9183-A1CED8C03C64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForNPOIDevelop", "ForNPOIDevelop\ForNPOIDevelop.csproj", "{DE5EF9ED-CE8C-4688-987C-91354D4F788F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +24,5 @@ Global
 		{E5E34BE5-8830-42D9-9183-A1CED8C03C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5E34BE5-8830-42D9-9183-A1CED8C03C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5E34BE5-8830-42D9-9183-A1CED8C03C64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE5EF9ED-CE8C-4688-987C-91354D4F788F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE5EF9ED-CE8C-4688-987C-91354D4F788F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE5EF9ED-CE8C-4688-987C-91354D4F788F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE5EF9ED-CE8C-4688-987C-91354D4F788F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
