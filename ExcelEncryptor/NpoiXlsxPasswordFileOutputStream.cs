@@ -56,6 +56,7 @@ public class NpoiXlsxPasswordFileOutputStream : Stream
     {
         base.Close();
         var raw = _buffer.ToArray();
-        Encrypt.FromBytesToFile(raw, _outputPath, _password);
+        var encryptor = new Encrypt();
+        encryptor.EncryptToFile(raw, _outputPath, _password);
     }
 }

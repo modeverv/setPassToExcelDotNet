@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <LangVersion>10</LangVersion>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>netstandard2.1;net48</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;net48;net9.0</TargetFrameworks>
         <RootNamespace>p2</RootNamespace>
     </PropertyGroup>
 
