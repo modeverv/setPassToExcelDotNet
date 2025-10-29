@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net9.0;netstandard2.1;net47</TargetFrameworks>
+        <TargetFrameworks>net8.0;netstandard2.1;net47</TargetFrameworks>
 
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <LangVersion>10</LangVersion>
 
         <PackageId>ExcelEncryptor</PackageId>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Authors>seijiro ikehata</Authors>
         <Description>Encrypt XLSX with a password (static utility API).</Description>
         <PackageTags>excel;xlsx;encryption;aes;password</PackageTags>
