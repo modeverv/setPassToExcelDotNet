@@ -9,7 +9,8 @@ public static class Program
     private static void Main()
     {
         TestEncrypt();
-        TestNPoi();        
+        TestNPoi();
+        TestApi();
     }
     
     private static void TestEncrypt()
@@ -111,71 +112,63 @@ public static class Program
         
         try
         {
-            Console.WriteLine("例1: DecryptToFile - ファイルに直接復号化");
+            Console.WriteLine("1: DecryptToFile");
             Encrypt.DecryptToFile(outputPath, decryptedFile, password);
-            Console.WriteLine($"  ✓ 復号化完了: {decryptedFile}");
-            Console.WriteLine($"  ファイルサイズ: {new FileInfo(decryptedFile).Length} bytes\n");
+            Console.WriteLine($"  ✓ decrypt complete: {decryptedFile}");
+            Console.WriteLine($"  data size: {new FileInfo(decryptedFile).Length} bytes\n");
             
-            // ========================================
-            // 例2: メモリに復号化してから処理
-            // ========================================
-            Console.WriteLine("例2: Decrypt - メモリに復号化");
+            Console.WriteLine("2: Decrypt");
             byte[] decryptedData = Encrypt.Decrypt(outputPath, password);
-            Console.WriteLine($"  ✓ 復号化完了");
-            Console.WriteLine($"  データサイズ: {decryptedData.Length} bytes");
+            Console.WriteLine($"  ✓ decrypt complete");
+            Console.WriteLine($"  data size: {decryptedData.Length} bytes");
             
             // 必要に応じてファイルに保存
             string outputFile = "decrypted_from_memory.xlsx";
             File.WriteAllBytes(outputFile, decryptedData);
-            Console.WriteLine($"  ✓ 保存完了: {outputFile}\n");
+            Console.WriteLine($"  ✓ save complete: {outputFile}\n");
             
-            // ========================================
-            // 例3: エラーハンドリング
-            // ========================================
-            Console.WriteLine("例3: エラーハンドリング");
+            Console.WriteLine("3: error handling");
             
-            // 間違ったパスワード
             try
             {
-                Console.Write("  間違ったパスワードでテスト... ");
+                Console.Write("  test wrong password ");
                 Encrypt.Decrypt(outputPath, "wrong_password");
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("✓ 正しくUnauthorizedAccessExceptionが発生");
+                Console.WriteLine("✓ OK UnauthorizedAccessException");
             }
             
-            // 存在しないファイル
             try
             {
-                Console.Write("  存在しないファイルでテスト... ");
+                Console.Write("  file not exist");
                 Encrypt.Decrypt("nonexistent.xlsx", password);
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("✓ 正しくFileNotFoundExceptionが発生");
+                Console.WriteLine("✓ OK FileNotFoundException");
             }
             
-            Console.WriteLine("\n=== すべてのテストが成功しました！ ===");
+            Console.WriteLine("\n=== test OK ===");
         }
         catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"\nエラー: パスワードが間違っています");
-            Console.WriteLine($"詳細: {ex.Message}");
+            Console.WriteLine($"\nerror : wrong password");
+            Console.WriteLine($"detail: {ex.Message}");
         }
         catch (FileNotFoundException ex)
         {
-            Console.WriteLine($"\nエラー: ファイルが見つかりません");
-            Console.WriteLine($"詳細: {ex.Message}");
+            Console.WriteLine($"\nerror: file not found");
+            Console.WriteLine($"detail: {ex.Message}");
         }
         catch (InvalidOperationException ex)
         {
-            Console.WriteLine($"\nエラー: 復号化に失敗しました");
-            Console.WriteLine($"詳細: {ex.Message}");
+            Console.WriteLine($"\nerror: decrypt fail");
+            Console.WriteLine($"detail: {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n予期しないエラー: {ex.Message}");
+            Console.WriteLine($"\nerror: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
     }
@@ -193,5 +186,25 @@ public static class Program
         using var outStream = new NpoiXlsxPasswordFileOutputStream(outPath, "pa");
         wb.Write(outStream);
         Console.WriteLine("output end.");
+    }
+    
+    private static void TestApi()
+    {
+        IWorkbook wb = new XSSFWorkbook();
+        var sheet = wb.CreateSheet("Sheet1");
+        sheet.CreateRow(0).CreateCell(0).SetCellValue("Hello");
+        
+        var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+        var outputPath = Path.Combine(projectDir, "protected.xlsx");
+        var inputPath = Path.Combine(projectDir, "a.xlsx");        
+
+        using var ms = new MemoryStream();
+        wb.Write(ms);
+        var bytes = ms.ToArray();
+        ExcelEncryptor.Encrypt.FromBytesToFile(bytes, outputPath, "password-string");
+        ExcelEncryptor.Encrypt.FromFileToFile(inputPath, outputPath, "password-string");
+
+        using var outStream = new NpoiXlsxPasswordFileOutputStream(outputPath, "password-string");
+        wb.Write(outStream); 
     }
 }

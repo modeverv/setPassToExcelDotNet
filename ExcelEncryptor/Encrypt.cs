@@ -7,9 +7,6 @@ using OpenMcdf;
 
 namespace ExcelEncryptor;
 
-/// <summary>
-/// AES暗号化の種類
-/// </summary>
 public enum AesKeySize
 {
     Aes128 = 128,
@@ -17,9 +14,6 @@ public enum AesKeySize
     Aes256 = 256
 }
 
-/// <summary>
-/// ハッシュアルゴリズムの種類
-/// </summary>
 public enum HashAlgorithmType
 {
     Sha1 = 20,      // 20 bytes
@@ -29,10 +23,6 @@ public enum HashAlgorithmType
     Md5 = 16        // 16 bytes (非推奨だが互換性のため)
 }
 
-/// <summary>
-/// XlsxEncryptor - Padding問題を修正した完全版
-/// Java POI完全互換
-/// </summary>
 public partial class Encrypt
 {
     private readonly int _keySize;
@@ -214,7 +204,7 @@ public partial class Encrypt
     }
 
     /// <summary>
-    /// EncryptPackage - CRITICAL FIX: 最後のブロックでPKCS7パディングを使用
+    /// EncryptPackage
     /// </summary>
     private byte[] EncryptPackage(byte[] data, byte[] key, byte[] keySalt)
     {
@@ -236,18 +226,15 @@ public partial class Encrypt
             byte[] block;
             if (isLast)
             {
-                // 🔴 CRITICAL: 最後のブロックはそのまま（PKCS7が自動付与される）
                 block = new byte[blockSize];
                 Buffer.BlockCopy(data, offset, block, 0, blockSize);
             }
             else
             {
-                // 中間ブロック: 4096バイトに0パディング
                 block = new byte[_segmentLength];
                 Buffer.BlockCopy(data, offset, block, 0, blockSize);
             }
             
-            // 🔴 CRITICAL: isLastに応じてパディングを切り替え
             var encrypted = EncryptWithAes(block, key, iv, isLast);
             writer.Write(encrypted);
             
@@ -351,7 +338,6 @@ public partial class Encrypt
         var k = GenerateKey(pwHash, blk, keySize);
         var iv = GenerateIv(salt, null, _blockSize);
         var pad = PadBlock(input);
-        // verifier系は常にPaddingMode.None
         return EncryptWithAes(pad, k, iv, false);
     }
 
@@ -397,21 +383,32 @@ public partial class Encrypt
     }
 
     /// <summary>
-    /// AES暗号化 - CRITICAL FIX: isLastパラメータでパディングを切り替え
+    /// AES encrypt
     /// </summary>
-    /// <param name="d">データ</param>
-    /// <param name="k">鍵</param>
-    /// <param name="iv">初期化ベクトル</param>
-    /// <param name="isLast">最後のブロックかどうか</param>
-    /// <returns>暗号化データ</returns>
+    /// <param name="d">data</param>
+    /// <param name="k">key</param>
+    /// <param name="iv">iv</param>
+    /// <param name="isLast">is the last block?</param>
+    /// <returns>encrypted data</returns>
     private static byte[] EncryptWithAes(byte[] d, byte[] k, byte[] iv, bool isLast)
     {
         using var aes = Aes.Create();
         aes.Key = k;
         aes.IV = iv;
         aes.Mode = CipherMode.CBC;
-        // 🔴 CRITICAL: 最後のブロックだけPKCS7、それ以外はNone
         aes.Padding = isLast ? PaddingMode.PKCS7 : PaddingMode.None;
         return aes.CreateEncryptor().TransformFinalBlock(d, 0, d.Length);
+    }
+    
+    public static void FromBytesToFile(byte[] bytes, string outputPath, string passwordString)
+    {
+        var encryptor = new Encrypt();
+        encryptor.EncryptToFile(bytes, outputPath, passwordString);
+    }
+    
+    public static void FromFileToFile(string inputPath, string outputPath, string passwordString)
+    {
+        var encryptor = new Encrypt();
+        encryptor.EncryptFile(inputPath, outputPath, passwordString);
     }
 }
