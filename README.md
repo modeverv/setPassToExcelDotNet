@@ -17,6 +17,7 @@ Password-protect and decrypt `.xlsx` / `.xlsm` files in .NET — compatible with
 - Recommended for new encryption: `Aes256` + `Sha512`
 - Compatibility-only legacy options: `Sha1`, `Md5`
 - `Md5` is supported only for compatibility and is not recommended for new files
+- Security scope and limitations: [docs/security.md](docs/security.md)
 
 ## Repository structure
 
