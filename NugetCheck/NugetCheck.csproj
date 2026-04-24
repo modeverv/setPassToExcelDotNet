@@ -8,8 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ExcelEncryptor" Version="1.0.0" />
-      <PackageReference Include="NPOI" Version="2.7.5" />
+        <PackageReference Include="ExcelEncryptor" Version="1.0.0"/>
     </ItemGroup>
 
 </Project>

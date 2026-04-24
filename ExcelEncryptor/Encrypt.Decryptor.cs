@@ -4,18 +4,18 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
-using NPOI.POIFS.FileSystem;
+using OpenMcdf;
 
 namespace ExcelEncryptor;
 
 /// <summary>
-/// Excel (XLSX) ファイルの復号化専用クラス
-/// 静的メソッドのみを提供
+///     Excel (XLSX) ファイルの復号化専用クラス
+///     静的メソッドのみを提供
 /// </summary>
 public partial class Encrypt
 {
     /// <summary>
-    /// 暗号化されたExcelファイルを復号化してメモリに返す
+    ///     暗号化されたExcelファイルを復号化してメモリに返す
     /// </summary>
     /// <param name="encryptedPath">暗号化されたファイルのパス</param>
     /// <param name="password">復号化パスワード</param>
@@ -28,17 +28,16 @@ public partial class Encrypt
     {
         if (string.IsNullOrEmpty(encryptedPath))
             throw new ArgumentException("Encrypted file path cannot be null or empty", nameof(encryptedPath));
-
+        
         if (!File.Exists(encryptedPath))
             throw new FileNotFoundException("Encrypted file not found", encryptedPath);
-
+        
         if (string.IsNullOrEmpty(password))
             throw new ArgumentException("Password cannot be null or empty", nameof(password));
-
+        
         try
         {
-            using var encryptedStream = File.OpenRead(encryptedPath);
-            var root = new POIFSFileSystem(encryptedStream);
+            using var root = RootStorage.OpenRead(encryptedPath);
             
             var (encryptionInfo, xmlString) = ReadEncryptionInfo(root);
             var secretKey = VerifyPasswordAndGetKey(password, encryptionInfo, xmlString);
@@ -51,9 +50,9 @@ public partial class Encrypt
             throw new InvalidOperationException("Failed to decrypt file", ex);
         }
     }
-
+    
     /// <summary>
-    /// 暗号化されたExcelファイルを復号化してファイルに保存
+    ///     暗号化されたExcelファイルを復号化してファイルに保存
     /// </summary>
     /// <param name="encryptedPath">暗号化されたファイルのパス</param>
     /// <param name="outputPath">復号化されたファイルの出力パス</param>
@@ -67,24 +66,48 @@ public partial class Encrypt
         var decryptedData = Decrypt(encryptedPath, password);
         File.WriteAllBytes(outputPath, decryptedData);
     }
-
-    #region Private Methods
-
+    
+    #region Internal Classes
+    
     /// <summary>
-    /// EncryptionInfo ストリームを読み取る
+    ///     暗号化情報を保持するクラス
     /// </summary>
-    private static (EncryptionInfo info, string xmlString) ReadEncryptionInfo(POIFSFileSystem root)
+    private class EncryptionInfo
     {
-        DocumentInputStream encInfoStream;
+        public int BlockSize { get; set; }
+        public int KeyBits { get; set; }
+        public string HashAlgorithm { get; set; } = "";
+        public int HashSize { get; set; }
+        public int SaltSize { get; set; }
+        public byte[] KeySalt { get; set; } = Array.Empty<byte>();
+        public byte[] VerifierSalt { get; set; } = Array.Empty<byte>();
+        public int SpinCount { get; set; }
+        public byte[] EncryptedVerifier { get; set; } = Array.Empty<byte>();
+        public byte[] EncryptedVerifierHash { get; set; } = Array.Empty<byte>();
+        public byte[] EncryptedKey { get; set; } = Array.Empty<byte>();
+        public byte[] EncryptedHmacKey { get; set; } = Array.Empty<byte>();
+        public byte[] EncryptedHmacValue { get; set; } = Array.Empty<byte>();
+    }
+    
+    #endregion
+    
+    #region Private Methods
+    
+    /// <summary>
+    ///     EncryptionInfo ストリームを読み取る
+    /// </summary>
+    private static (EncryptionInfo info, string xmlString) ReadEncryptionInfo(RootStorage root)
+    {
+        CfbStream encInfoStream;
         try
         {
-            encInfoStream = root.CreateDocumentInputStream("EncryptionInfo");
+            encInfoStream = root.OpenStream("EncryptionInfo");
         }
         catch
         {
             throw new InvalidOperationException("File is not encrypted (EncryptionInfo missing)");
         }
-
+        
         using (encInfoStream)
         using (var reader = new BinaryReader(encInfoStream))
         {
@@ -94,19 +117,17 @@ public partial class Encrypt
             
             if (versionMajor != 4 || versionMinor != 4)
                 throw new NotSupportedException($"Unsupported encryption version: {versionMajor}.{versionMinor}");
-
-            using var xmlBuffer = new MemoryStream();
-            encInfoStream.CopyTo(xmlBuffer);
-            var xmlBytes = xmlBuffer.ToArray();
+            
+            var xmlBytes = reader.ReadBytes((int)(encInfoStream.Length - 8));
             var xmlString = Encoding.UTF8.GetString(xmlBytes);
             var xmlDoc = XDocument.Parse(xmlString);
             
             return (ParseEncryptionInfo(xmlDoc), xmlString);
         }
     }
-
+    
     /// <summary>
-    /// XML形式のEncryptionInfoをパース
+    ///     XML形式のEncryptionInfoをパース
     /// </summary>
     private static EncryptionInfo ParseEncryptionInfo(XDocument xmlDoc)
     {
@@ -163,9 +184,9 @@ public partial class Encrypt
         
         return info;
     }
-
+    
     /// <summary>
-    /// パスワードを検証して暗号化キーを取得
+    ///     パスワードを検証して暗号化キーを取得
     /// </summary>
     private static byte[] VerifyPasswordAndGetKey(string password, EncryptionInfo info, string xmlString)
     {
@@ -222,9 +243,7 @@ public partial class Encrypt
         
         // ハッシュを比較してパスワードを検証
         if (!verifierHash.Take(info.HashSize).SequenceEqual(verifierHashDec.Take(info.HashSize)))
-        {
             throw new UnauthorizedAccessException("Invalid password");
-        }
         
         // 暗号化キーを復号化
         intermedKey = GenerateKey(pwHash, kCryptoKeyBlock, info.KeyBits / 8, hashAlg);
@@ -244,21 +263,13 @@ public partial class Encrypt
         
         return keySpec;
     }
-
+    
     /// <summary>
-    /// 暗号化されたパッケージを復号化
+    ///     暗号化されたパッケージを復号化
     /// </summary>
-    private static byte[] DecryptPackage(POIFSFileSystem root, byte[] secretKey, EncryptionInfo info)
+    private static byte[] DecryptPackage(RootStorage root, byte[] secretKey, EncryptionInfo info)
     {
-        DocumentInputStream encPackageStream;
-        try
-        {
-            encPackageStream = root.CreateDocumentInputStream("EncryptedPackage");
-        }
-        catch
-        {
-            throw new InvalidOperationException("File is not encrypted (EncryptedPackage missing)");
-        }
+        var encPackageStream = root.OpenStream("EncryptedPackage");
         
         using (encPackageStream)
         using (var reader = new BinaryReader(encPackageStream))
@@ -277,16 +288,16 @@ public partial class Encrypt
             while (totalDecrypted < originalSize)
             {
                 // 残りのデータサイズ
-                long remaining = originalSize - totalDecrypted;
-                bool isLast = (remaining <= segmentLength);
+                var remaining = originalSize - totalDecrypted;
+                var isLast = remaining <= segmentLength;
                 
                 // ブロックサイズを決定
                 int encryptedBlockSize;
                 if (isLast)
                 {
                     // 最後のブロック: PKCS7パディングを考慮
-                    int expectedSize = (int)remaining;
-                    encryptedBlockSize = ((expectedSize / info.BlockSize) + 1) * info.BlockSize;
+                    var expectedSize = (int)remaining;
+                    encryptedBlockSize = (expectedSize / info.BlockSize + 1) * info.BlockSize;
                 }
                 else
                 {
@@ -314,7 +325,7 @@ public partial class Encrypt
                 }
                 
                 // 書き込むサイズを決定
-                int writeSize = isLast ? (int)remaining : segmentLength;
+                var writeSize = isLast ? (int)remaining : segmentLength;
                 
                 ms.Write(decryptedBlock, 0, writeSize);
                 totalDecrypted += writeSize;
@@ -324,9 +335,9 @@ public partial class Encrypt
             return ms.ToArray();
         }
     }
-
+    
     /// <summary>
-    /// ハッシュアルゴリズムを作成
+    ///     ハッシュアルゴリズムを作成
     /// </summary>
     private static HashAlgorithm CreateHashAlgorithm(string algorithmName)
     {
@@ -340,20 +351,20 @@ public partial class Encrypt
             _ => SHA1.Create() // デフォルト
         };
     }
-
+    
     /// <summary>
-    /// パスワードハッシュを生成
+    ///     パスワードハッシュを生成
     /// </summary>
     private static byte[] HashPassword(string pw, byte[] salt, int spin, HashAlgorithm hashAlg)
     {
         var pwb = Encoding.Unicode.GetBytes(pw);
-
+        
         try
         {
             hashAlg.TransformBlock(salt, 0, salt.Length, null, 0);
             hashAlg.TransformFinalBlock(pwb, 0, pwb.Length);
             var h = (byte[])hashAlg.Hash!.Clone();
-
+            
             for (var i = 0; i < spin; i++)
             {
                 hashAlg.Initialize();
@@ -362,7 +373,7 @@ public partial class Encrypt
                 hashAlg.TransformFinalBlock(h, 0, h.Length);
                 h = (byte[])hashAlg.Hash!.Clone();
             }
-
+            
             return h;
         }
         finally
@@ -370,9 +381,9 @@ public partial class Encrypt
             Array.Clear(pwb, 0, pwb.Length);
         }
     }
-
+    
     /// <summary>
-    /// キーを生成
+    ///     キーを生成
     /// </summary>
     private static byte[] GenerateKey(byte[] h, byte[] blk, int ks, HashAlgorithm hashAlg)
     {
@@ -384,9 +395,9 @@ public partial class Encrypt
         Array.Copy(d, k, Math.Min(d.Length, ks));
         return k;
     }
-
+    
     /// <summary>
-    /// 初期化ベクトル（IV）を生成
+    ///     初期化ベクトル（IV）を生成
     /// </summary>
     private static byte[] GenerateIv(byte[] salt, byte[]? blk, int bs, HashAlgorithm hashAlg)
     {
@@ -396,7 +407,7 @@ public partial class Encrypt
             Array.Copy(salt, iv1, Math.Min(salt.Length, bs));
             return iv1;
         }
-
+        
         hashAlg.Initialize();
         hashAlg.TransformBlock(salt, 0, salt.Length, null, 0);
         hashAlg.TransformFinalBlock(blk, 0, blk.Length);
@@ -405,9 +416,9 @@ public partial class Encrypt
         Array.Copy(d, iv, Math.Min(d.Length, bs));
         return iv;
     }
-
+    
     /// <summary>
-    /// ブロック単位のIVを生成
+    ///     ブロック単位のIVを生成
     /// </summary>
     private static byte[] GenerateBlockIv(byte[] salt, uint blockKey, int bs, HashAlgorithm hashAlg)
     {
@@ -420,9 +431,9 @@ public partial class Encrypt
         Array.Copy(hash, iv, Math.Min(hash.Length, bs));
         return iv;
     }
-
+    
     /// <summary>
-    /// 配列の先頭から指定サイズ分を取得
+    ///     配列の先頭から指定サイズ分を取得
     /// </summary>
     private static byte[] GetBlock0(byte[] data, int size)
     {
@@ -430,30 +441,7 @@ public partial class Encrypt
         Array.Copy(data, result, Math.Min(data.Length, size));
         return result;
     }
-
+    
     #endregion
-
-    #region Internal Classes
-
-    /// <summary>
-    /// 暗号化情報を保持するクラス
-    /// </summary>
-    private class EncryptionInfo
-    {
-        public int BlockSize { get; set; }
-        public int KeyBits { get; set; }
-        public string HashAlgorithm { get; set; } = "";
-        public int HashSize { get; set; }
-        public int SaltSize { get; set; }
-        public byte[] KeySalt { get; set; } = Array.Empty<byte>();
-        public byte[] VerifierSalt { get; set; } = Array.Empty<byte>();
-        public int SpinCount { get; set; }
-        public byte[] EncryptedVerifier { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedVerifierHash { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedKey { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedHmacKey { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedHmacValue { get; set; } = Array.Empty<byte>();
-    }
-
-    #endregion
+    
 }

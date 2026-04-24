@@ -22,19 +22,19 @@ public static class Test
         checkResult = CompareWithOriginal(originalPath, outputPath, testFilePath, password);
         return checkResult;
     }
-
-
+    
+    
     private static bool TestDecryption(string encryptedPath, string password, string label)
     {
         try
         {
             Console.WriteLine($"\n{label} decrypt...");
             var decrypted = Encrypt.Decrypt(encryptedPath, password);
-
+            
             Console.WriteLine($"  size: {decrypted.Length} bytes");
             Console.WriteLine(
                 $"  first 16bytes: {BitConverter.ToString(decrypted, 0, Math.Min(16, decrypted.Length)).Replace("-", " ")}");
-
+            
             if (decrypted.Length >= 2 && decrypted[0] == 0x50 && decrypted[1] == 0x4B)
                 Console.WriteLine("  ✓ ok ZIP file（check PK signature）");
             else
@@ -45,10 +45,10 @@ public static class Test
             Console.WriteLine($"  ✗ error: {ex.Message}");
             return false;
         }
-
+        
         return true;
     }
-
+    
     private static bool CompareWithOriginal(string originalPath, string dotnetPath, string poiPath, string password)
     {
         try
@@ -56,14 +56,14 @@ public static class Test
             var original = File.ReadAllBytes(originalPath);
             var dotnetDecrypted = Encrypt.Decrypt(dotnetPath, password);
             var poiDecrypted = Encrypt.Decrypt(poiPath, password);
-
+            
             Console.WriteLine($"original: {original.Length} bytes");
             Console.WriteLine($"dotnet: {dotnetDecrypted.Length} bytes");
             Console.WriteLine($"poi: {poiDecrypted.Length} bytes");
-
+            
             var dotnetMatch = CompareBytes(original, dotnetDecrypted);
             var poiMatch = CompareBytes(original, poiDecrypted);
-
+            
             Console.WriteLine($"\ndotnet and original: {(dotnetMatch ? "✓ same" : "✗ not same")}");
             Console.WriteLine($"poi and original: {(poiMatch ? "✓ same" : "✗ not same")}");
             if (!(dotnetMatch && poiMatch)) return false;
@@ -73,10 +73,10 @@ public static class Test
             Console.WriteLine($"compare error: {ex.Message}");
             return false;
         }
-
+        
         return true;
     }
-
+    
     private static bool CompareBytes(byte[] a, byte[] b)
     {
         if (a.Length != b.Length) return false;

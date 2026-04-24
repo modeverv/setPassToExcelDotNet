@@ -1,6 +1,4 @@
 ﻿using ExcelEncryptor;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 
 namespace p2;
 
@@ -9,8 +7,6 @@ public static class Program
     private static void Main()
     {
         TestEncrypt();
-        TestNPoi();
-        TestApi();
     }
     
     private static void TestEncrypt()
@@ -118,12 +114,12 @@ public static class Program
             Console.WriteLine($"  data size: {new FileInfo(decryptedFile).Length} bytes\n");
             
             Console.WriteLine("2: Decrypt");
-            byte[] decryptedData = Encrypt.Decrypt(outputPath, password);
-            Console.WriteLine($"  ✓ decrypt complete");
+            var decryptedData = Encrypt.Decrypt(outputPath, password);
+            Console.WriteLine("  ✓ decrypt complete");
             Console.WriteLine($"  data size: {decryptedData.Length} bytes");
             
             // 必要に応じてファイルに保存
-            string outputFile = "decrypted_from_memory.xlsx";
+            var outputFile = "decrypted_from_memory.xlsx";
             File.WriteAllBytes(outputFile, decryptedData);
             Console.WriteLine($"  ✓ save complete: {outputFile}\n");
             
@@ -153,17 +149,17 @@ public static class Program
         }
         catch (UnauthorizedAccessException ex)
         {
-            Console.WriteLine($"\nerror : wrong password");
+            Console.WriteLine("\nerror : wrong password");
             Console.WriteLine($"detail: {ex.Message}");
         }
         catch (FileNotFoundException ex)
         {
-            Console.WriteLine($"\nerror: file not found");
+            Console.WriteLine("\nerror: file not found");
             Console.WriteLine($"detail: {ex.Message}");
         }
         catch (InvalidOperationException ex)
         {
-            Console.WriteLine($"\nerror: decrypt fail");
+            Console.WriteLine("\nerror: decrypt fail");
             Console.WriteLine($"detail: {ex.Message}");
         }
         catch (Exception ex)
@@ -171,40 +167,5 @@ public static class Program
             Console.WriteLine($"\nerror: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
-    }
-    
-    
-    private static void TestNPoi()
-    {
-        IWorkbook wb = new XSSFWorkbook();
-        var sheet = wb.CreateSheet("Sheet1");
-        sheet.CreateRow(0).CreateCell(0).SetCellValue("Hello");
-        
-        var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-        var outPath = Path.Combine(projectDir, "protected.xlsx");
-        
-        using var outStream = new NpoiXlsxPasswordFileOutputStream(outPath, "pa");
-        wb.Write(outStream);
-        Console.WriteLine("output end.");
-    }
-    
-    private static void TestApi()
-    {
-        IWorkbook wb = new XSSFWorkbook();
-        var sheet = wb.CreateSheet("Sheet1");
-        sheet.CreateRow(0).CreateCell(0).SetCellValue("Hello");
-        
-        var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-        var outputPath = Path.Combine(projectDir, "protected.xlsx");
-        var inputPath = Path.Combine(projectDir, "a.xlsx");        
-
-        using var ms = new MemoryStream();
-        wb.Write(ms);
-        var bytes = ms.ToArray();
-        ExcelEncryptor.Encrypt.FromBytesToFile(bytes, outputPath, "password-string");
-        ExcelEncryptor.Encrypt.FromFileToFile(inputPath, outputPath, "password-string");
-
-        using var outStream = new NpoiXlsxPasswordFileOutputStream(outputPath, "password-string");
-        wb.Write(outStream); 
     }
 }
