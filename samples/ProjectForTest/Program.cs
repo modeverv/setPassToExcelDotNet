@@ -12,11 +12,11 @@ public static class Program
     private static void TestEncrypt()
     {
         var password = "pass";
-        var projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-        var inputPath = Path.Combine(projectDir, "a.xlsx");
+        var projectDir = FindRepositoryRoot();
+        var inputPath = Path.Combine(projectDir, "test-vectors", "plain", "a.xlsx");
         var outputPath = "";
         var decryptedFile = Path.Combine(projectDir, "decrypted.xlsx");
-        var testFilePath = Path.Combine(projectDir, "poi_b.xlsx");
+        var testFilePath = Path.Combine(projectDir, "test-vectors", "encrypted-by-apache-poi", "poi_b.xlsx");
         
         // ========================================
         // pattern1: AES-128 + SHA-1
@@ -167,5 +167,20 @@ public static class Program
             Console.WriteLine($"\nerror: {ex.Message}");
             Console.WriteLine(ex.StackTrace);
         }
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (dir != null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "SetPassToExceldotNet.sln")))
+                return dir.FullName;
+
+            dir = dir.Parent;
+        }
+
+        throw new DirectoryNotFoundException("Repository root could not be located from sample runtime directory.");
     }
 }

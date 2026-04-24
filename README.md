@@ -15,13 +15,15 @@ Password-protect and decrypt `.xlsx` / `.xlsm` files in .NET — compatible with
 ## Repository structure
 
 ```
-ExcelEncryptor/   — library (NuGet package)
-ProjectForTest/   — round-trip compatibility test against POI
+src/ExcelEncryptor/          — library (NuGet package)
+tests/ExcelEncryptor.Tests/  — automated tests
+samples/ProjectForTest/      — round-trip compatibility sample against POI
+test-vectors/                — deterministic workbook fixtures
 ```
 
 ## Usage
 
-See [ExcelEncryptor/README.md](ExcelEncryptor/README.md) for full API documentation and examples.
+See [src/ExcelEncryptor/README.md](src/ExcelEncryptor/README.md) for full API documentation and examples.
 
 ## Dependencies
 
@@ -29,10 +31,10 @@ See [ExcelEncryptor/README.md](ExcelEncryptor/README.md) for full API documentat
 
 ## Testing
 
-Run `ProjectForTest/Program.cs` to verify encryption/decryption round-trip compatibility with POI.
+Run `samples/ProjectForTest/Program.cs` to verify encryption/decryption round-trip compatibility with POI.
 
 ```
-dotnet run --project ProjectForTest
+dotnet run --project samples/ProjectForTest/ProjectForTest.csproj
 
 === 復号化テスト ===
 
