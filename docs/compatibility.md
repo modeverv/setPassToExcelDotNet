@@ -33,7 +33,7 @@ This document summarizes the compatibility coverage currently verified in this r
 
 - Apache POI interoperability:
   - `tests/ExcelEncryptor.Interop.PoiTests/PoiInteropTests.cs`
-  - `java-tests/poi-decrypt-checker/pom.xml` (`poi.version` = `5.2.5`)
+  - `tests/poi-decrypt-checker/pom.xml` (`poi.version` = `5.2.5`)
 - Generator interoperability:
   - `tests/ExcelEncryptor.Interop.Tests/GeneratorInteropTests.cs`
   - Versions from `tests/ExcelEncryptor.Interop.Tests/ExcelEncryptor.Interop.Tests.csproj`

@@ -253,7 +253,7 @@ public class GeneratorInteropTests
                 return false;
             }
 
-            var checkerDir = Path.Combine(root, "java-tests", "poi-decrypt-checker");
+            var checkerDir = Path.Combine(root, "tests", "poi-decrypt-checker");
             var pomPath = Path.Combine(checkerDir, "pom.xml");
             var buildArgs = $"-q -f \"{pomPath}\" -DskipTests package";
 

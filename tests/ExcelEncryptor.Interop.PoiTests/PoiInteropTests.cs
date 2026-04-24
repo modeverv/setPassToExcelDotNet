@@ -94,6 +94,56 @@ public class PoiInteropTests
         Assert.Contains("Invalid password", ex.Message);
     }
 
+    [Fact]
+    public void Encrypt_ImageXlsx_CanBeDecryptedByApachePoi()
+    {
+        var root = FindRepositoryRoot();
+        var plainPath = Path.Combine(root, "test-vectors", "image", "image.xlsx");
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-poi-image-enc-{Guid.NewGuid():N}.xlsx");
+        var poiDecryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-poi-image-dec-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt(AesKeySize.Aes256, HashAlgorithmType.Sha512);
+            encryptor.EncryptFile(plainPath, encryptedPath, Password);
+
+            if (!TryDecryptWithPoi(root, encryptedPath, poiDecryptedPath, Password, out var reason))
+            {
+                if (IsPoiInteropRequired())
+                    Assert.Fail(reason);
+                return;
+            }
+
+            Assert.Equal(File.ReadAllBytes(plainPath), File.ReadAllBytes(poiDecryptedPath));
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+            DeleteIfExists(poiDecryptedPath);
+        }
+    }
+
+    [Fact]
+    public void Decrypt_PoiEncryptedImageXlsx_PreservesAllBytes()
+    {
+        var root = FindRepositoryRoot();
+        var plainPath = Path.Combine(root, "test-vectors", "image", "image.xlsx");
+        var encryptedPath = Path.Combine(root, "test-vectors", "encrypted-by-apache-poi", "image_aes256_sha512.xlsx");
+
+        var decrypted = Encrypt.Decrypt(encryptedPath, Password);
+        Assert.Equal(File.ReadAllBytes(plainPath), decrypted);
+    }
+
+    [Fact]
+    public void Decrypt_PoiEncryptedImageXlsx_WithWrongPassword_ThrowsUnauthorizedAccessException()
+    {
+        var root = FindRepositoryRoot();
+        var encryptedPath = Path.Combine(root, "test-vectors", "encrypted-by-apache-poi", "image_aes256_sha512.xlsx");
+
+        var ex = Assert.Throws<UnauthorizedAccessException>(() => Encrypt.Decrypt(encryptedPath, "wrong_password"));
+        Assert.Contains("Invalid password", ex.Message);
+    }
+
     private static bool TryDecryptWithPoi(string root, string encryptedPath, string outputPath, string password, out string reason)
     {
         if (!TryEnsurePoiChecker(root, out var jarPath, out reason))
@@ -121,7 +171,7 @@ public class PoiInteropTests
                 return false;
             }
 
-            var checkerDir = Path.Combine(root, "java-tests", "poi-decrypt-checker");
+            var checkerDir = Path.Combine(root, "tests", "poi-decrypt-checker");
             var pomPath = Path.Combine(checkerDir, "pom.xml");
             var buildArgs = $"-q -f \"{pomPath}\" -DskipTests package";
 
