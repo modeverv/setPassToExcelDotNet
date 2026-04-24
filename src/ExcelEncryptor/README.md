@@ -1,5 +1,6 @@
 # ExcelEncryptor
 
+ExcelEncryptor is a small, focused, free and commercially usable .NET library for applying Excel-compatible Agile Encryption to OOXML workbooks.
 
 Password-protect and decrypt `.xlsx` / `.xlsm` files using MS-OFFCRYPTO Agile Encryption.
 
@@ -7,6 +8,13 @@ Tested for compatibility with Apache POI, Microsoft Excel, and LibreOffice Calc.
 
 Works with any library that produces `.xlsx` bytes: ClosedXML, NPOI, DocumentFormat.OpenXml, or a plain
 `File.ReadAllBytes`.
+
+## Commercial use and license
+
+- Commercial use is allowed under `Apache-2.0`.
+- This project is intended to remain free for both personal and commercial use.
+- There is no plan to introduce a paid commercial license for this library.
+- See `LICENSE` and [security.md](https://github.com/modeverv/setPassToExcelDotNet/blob/master/docs/security.md) for scope and limitations.
 
 ## Installation
 
@@ -47,7 +55,7 @@ encryptor.EncryptToFile(xlsxBytes, "output.xlsx", "password");
 ```
 
 Supported key sizes: `Aes128` (default), `Aes192`, `Aes256`  
-Supported hash algorithms: `Sha1` (default), `Sha256`, `Sha384`, `Sha512`, `Md5`
+Supported hash algorithms: `Sha1` (default), `Sha256`, `Sha384`, `Sha512`, `Md5` (legacy compatibility only)
 
 ### Recommended and legacy settings
 
