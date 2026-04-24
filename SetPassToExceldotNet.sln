@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetCheck", "samples\Nuget
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelEncryptor.Tests", "tests\ExcelEncryptor.Tests\ExcelEncryptor.Tests.csproj", "{90E910A0-2448-45AB-98AE-604211EAA3CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelEncryptor.Interop.PoiTests", "tests\ExcelEncryptor.Interop.PoiTests\ExcelEncryptor.Interop.PoiTests.csproj", "{8BDB70CE-4926-48B5-8063-76C4D5D18D1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{90E910A0-2448-45AB-98AE-604211EAA3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90E910A0-2448-45AB-98AE-604211EAA3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90E910A0-2448-45AB-98AE-604211EAA3CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BDB70CE-4926-48B5-8063-76C4D5D18D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BDB70CE-4926-48B5-8063-76C4D5D18D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BDB70CE-4926-48B5-8063-76C4D5D18D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BDB70CE-4926-48B5-8063-76C4D5D18D1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
