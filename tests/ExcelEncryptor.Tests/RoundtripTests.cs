@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ExcelEncryptor;
 using Xunit;
@@ -69,6 +70,79 @@ public class RoundtripTests
         {
             DeleteIfExists(encryptedPath);
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(BoundaryPasswordCases))]
+    public void EncryptDecrypt_WithBoundaryPasswords_Succeeds(string _, string password)
+    {
+        var originalPath = GetTestVectorPath();
+        var originalBytes = File.ReadAllBytes(originalPath);
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-boundary-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt();
+            encryptor.EncryptFile(originalPath, encryptedPath, password);
+
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, password);
+            Assert.Equal(originalBytes, decryptedBytes);
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(BoundaryPasswordCases))]
+    public void Decrypt_WithWrongPassword_ForBoundaryPasswords_ThrowsUnauthorizedAccessException(string _, string password)
+    {
+        var originalPath = GetTestVectorPath();
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-boundary-wrong-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt();
+            encryptor.EncryptFile(originalPath, encryptedPath, password);
+
+            var ex = Assert.Throws<UnauthorizedAccessException>(() => Encrypt.Decrypt(encryptedPath, password + "_wrong"));
+            Assert.Contains("Invalid password", ex.Message);
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+        }
+    }
+
+    [Fact]
+    public void Encrypt_WithEmptyPassword_BehavesAsDocumented()
+    {
+        var originalPath = GetTestVectorPath();
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-empty-pw-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt();
+            var ex = Assert.Throws<ArgumentException>(() => encryptor.EncryptFile(originalPath, encryptedPath, string.Empty));
+            Assert.Equal("password", ex.ParamName);
+
+            encryptor.EncryptFile(originalPath, encryptedPath, Password);
+            var decryptEx = Assert.Throws<ArgumentException>(() => Encrypt.Decrypt(encryptedPath, string.Empty));
+            Assert.Equal("password", decryptEx.ParamName);
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+        }
+    }
+
+    public static IEnumerable<object[]> BoundaryPasswordCases()
+    {
+        yield return new object[] { "long-255", new string('a', 255) };
+        yield return new object[] { "japanese", "\u65e5\u672c\u8a9e\u30d1\u30b9\u30ef\u30fc\u30c9" };
+        yield return new object[] { "emoji", "\ud83d\ude03\ud83d\ude80\ud83d\udd12" };
+        yield return new object[] { "symbols", "!@#$%^&*()_+-=[]{}|;':\",./<>?`~" };
     }
 
     private static string GetTestVectorPath()
