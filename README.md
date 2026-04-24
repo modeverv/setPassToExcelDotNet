@@ -24,6 +24,7 @@ Password-protect and decrypt `.xlsx` / `.xlsm` files in .NET — compatible with
 src/ExcelEncryptor/          — library (NuGet package)
 tests/ExcelEncryptor.Tests/  — automated tests
 samples/ProjectForTest/      — round-trip compatibility sample against POI
+samples/WorkbookSizeBenchmark/ — large workbook benchmark runner
 test-vectors/                — deterministic workbook fixtures
 ```
 
@@ -54,6 +55,14 @@ poi版 を復号化中...
 
 dotnet版と元ファイル: ✓ 完全一致
 poi版と元ファイル:    ✓ 完全一致
+```
+
+Validated workbook sizes in automated tests: `1 MB`, `10 MB`, `50 MB`, `100 MB`.
+
+To measure local performance for large files, run:
+
+```bash
+dotnet run --project samples/WorkbookSizeBenchmark/WorkbookSizeBenchmark.csproj -- 1 10 50 100
 ```
 
 ## License
