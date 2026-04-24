@@ -174,6 +174,28 @@ public class RoundtripTests
         }
     }
 
+    [Fact]
+    public void EncryptThenDecrypt_ImageXlsx_PreservesAllBytes()
+    {
+        var root = FindRepositoryRoot();
+        var originalPath = Path.Combine(root, "test-vectors", "image", "image.xlsx");
+        var originalBytes = File.ReadAllBytes(originalPath);
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-image-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt(AesKeySize.Aes256, HashAlgorithmType.Sha512);
+            encryptor.EncryptFile(originalPath, encryptedPath, Password);
+
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
+            Assert.Equal(originalBytes, decryptedBytes);
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+        }
+    }
+
     public static IEnumerable<object[]> BoundaryPasswordCases()
     {
         yield return new object[] { "long-255", new string('a', 255) };
