@@ -5,7 +5,25 @@ on:
   pull_request:
 
 jobs:
-  dotnet-and-poi:
+  dotnet-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: ['8.0.x']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Run tests
+        run: dotnet test
+
+  ubuntu-extended:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,9 +44,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y maven
 
-      - name: Run tests (including POI interop)
+      - name: Run POI interop tests (required)
         env:
           POI_INTEROP_REQUIRED: '1'
         run: |
-          dotnet test
+          dotnet test tests/ExcelEncryptor.Interop.PoiTests/ExcelEncryptor.Interop.PoiTests.csproj
+          dotnet test tests/ExcelEncryptor.Interop.Tests/ExcelEncryptor.Interop.Tests.csproj
+
+      - name: Build package project
+        run: dotnet build src/ExcelEncryptor/ExcelEncryptor.csproj -c Release
+
+      - name: Pack NuGet package
+        run: dotnet pack src/ExcelEncryptor/ExcelEncryptor.csproj -c Release --no-build
+
+      - name: Build sample projects
+        run: |
+          dotnet build samples/ProjectForTest/ProjectForTest.csproj -c Release -f net8.0
+          dotnet build samples/NugetCheck/NugetCheck.csproj -c Release
+          dotnet build samples/WorkbookSizeBenchmark/WorkbookSizeBenchmark.csproj -c Release
+
+      - name: Verify README samples
+        run: dotnet test tests/ExcelEncryptor.Interop.Tests/ExcelEncryptor.Interop.Tests.csproj --filter FullyQualifiedName~ReadmeSamplesSmokeTests
 
