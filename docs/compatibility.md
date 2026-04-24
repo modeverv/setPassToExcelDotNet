@@ -12,15 +12,13 @@ This document summarizes the compatibility coverage currently verified in this r
 
 ## Compatibility Matrix
 
-| Target | Version | Status |
-|---|---:|---|
-| Microsoft Excel for Windows | TBD | Manual (record pending) |
-| Microsoft Excel for Mac | TBD | Manual (record pending) |
-| LibreOffice Calc | TBD | Manual (record pending) |
-| Apache POI | 5.2.5 (checker) | Automated |
-| ClosedXML (generated workbook) | 0.104.2 | Automated |
-| NPOI (generated workbook) | 2.7.5 | Automated |
-| OpenXML SDK (generated workbook) | 3.1.1 | Automated |
+| Environment | Result |
+|---|---|
+| Microsoft Excel for Mac | Passed |
+| Microsoft Excel for Windows | Passed |
+| LibreOffice Calc on Ubuntu Docker/VNC | Passed |
+| Apache POI decrypt compatibility | Passed |
+| Image embedded workbook | Passed |
 
 ## Format Coverage
 

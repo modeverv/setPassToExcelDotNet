@@ -1,7 +1,9 @@
 # ExcelEncryptor
 
-Password-protect and decrypt `.xlsx` / `.xlsm` files using MS-OFFCRYPTO Agile encryption — fully compatible with Apache
-POI and Microsoft Excel.
+
+Password-protect and decrypt `.xlsx` / `.xlsm` files using MS-OFFCRYPTO Agile Encryption.
+
+Tested for compatibility with Apache POI, Microsoft Excel, and LibreOffice Calc.
 
 Works with any library that produces `.xlsx` bytes: ClosedXML, NPOI, DocumentFormat.OpenXml, or a plain
 `File.ReadAllBytes`.
@@ -151,8 +153,33 @@ wb.Write(stream);
 
 ---
 
+## Compatibility
+
+
+ExcelEncryptor is tested with:
+
+- Manual open checks with Microsoft Excel for Mac
+- Manual open checks with Microsoft Excel for Windows
+- Manual open checks with LibreOffice Calc on Ubuntu via Docker/VNC
+- Automated Apache POI interoperability tests
+- Automated tests for `.xlsx` files containing formulas, styles, Japanese sheet names, and embedded images
+
+For details, see [compatibility.md](https://github.com/modeverv/setPassToExcelDotNet/blob/master/docs/compatibility.md).
+
+---
+
+
 ## Changelog
 
+### v2.0.5
+
+- Added automated compatibility tests
+- Added Apache POI interoperability tests
+- Added image-containing workbook tests
+- Added manual verification artifacts for Excel / LibreOffice checks
+
+For details, see [tests](https://github.com/modeverv/setPassToExcelDotNet/tree/master/tests).
+ 
 ### v2.0.0
 
 - Library is now NPOI-free — depends only on OpenMcdf
