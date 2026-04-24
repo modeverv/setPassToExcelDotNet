@@ -71,3 +71,12 @@ Environment は最低でも `OS version + App version` を記録する。
 - [ ] 不合格項目がある場合は、Issue を起票して再確認日を記録する
 - [ ] 完了した記録は Pull Request またはリリースノートにリンクする
 
+## DockerでのLinux環境の確認
+
+```bash
+cp .env.example .env
+docker compose up -d
+open http://localhost:6901/
+```
+
+## 

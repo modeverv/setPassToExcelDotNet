@@ -9,3 +9,4 @@ riderModule.iml
 *.jar
 *.class
 pom.properties
+.env

@@ -1,0 +1,18 @@
+services:
+  lo-vnc:
+    platform: ${LO_VNC_PLATFORM:-linux/amd64}
+    build:
+      context: .
+      dockerfile: docker/vnc/Dockerfile
+    container_name: lo-vnc
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    ports:
+      - "5901:5901"
+      - "6901:6901"
+    shm_size: "1gb"
+    environment:
+      VNC_PW: ${VNC_PASSWORD:-changeme}
+      VNC_RESOLUTION: ${VNC_RESOLUTION:-1920x1080}
+      VNC_COL_DEPTH: ${VNC_COL_DEPTH:-24}
