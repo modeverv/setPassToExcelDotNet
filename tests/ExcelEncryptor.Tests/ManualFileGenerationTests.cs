@@ -35,6 +35,7 @@ public class ManualFileGenerationTests
         yield return (Path.Combine("test-vectors", "plain", "simple.xlsx"), "simple_aes256_sha512.xlsx");
         yield return (Path.Combine("test-vectors", "plain", "japanese.xlsx"), "japanese_aes256_sha512.xlsx");
         yield return (Path.Combine("test-vectors", "xlsm", "excel_sample.xlsm"), "excel_sample_aes256_sha512.xlsm");
+        yield return (Path.Combine("test-vectors", "image", "image.xlsx"), "excel_image_sample_aes256_sha512.xlsx");        
     }
 
     private static string FindRepositoryRoot()
