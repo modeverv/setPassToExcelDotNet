@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
-using OpenMcdf;
+using NPOI.POIFS.FileSystem;
 
 namespace ExcelEncryptor;
 
@@ -114,7 +114,7 @@ public partial class Encrypt
             throw new InvalidOperationException("Failed to encrypt file", ex);
         }
     }
-
+    
     public void EncryptFile(string inputPath, string outputPath, string password)
     {
         var packageData = File.ReadAllBytes(inputPath);
@@ -255,38 +255,51 @@ public partial class Encrypt
         var body = new byte[encryptedPackage.Length - 8];
         Buffer.BlockCopy(encryptedPackage, 8, body, 0, body.Length);
         hmac.TransformFinalBlock(body, 0, body.Length);
-
-        var hmacValPadded = PadBlock(hmac.Hash);
-        byte[] kIntegrityValueBlock = { 0xA0, 0x67, 0x7F, 0x02, 0xB2, 0x2C, 0x84, 0x33 };
-        var ivVal = GenerateIv(keySalt, kIntegrityValueBlock, _blockSize);
-        var encryptedHmacValue = EncryptWithAes(hmacValPadded, encryptionKey, ivVal, false);
-
-        XNamespace ns = "http://schemas.microsoft.com/office/2006/encryption";
-        if (xmlDoc.Root != null)
-            xmlDoc.Root.Element(ns + "dataIntegrity")
-                ?.SetAttributeValue("encryptedHmacValue", Convert.ToBase64String(encryptedHmacValue));
+        
+        if (hmac.Hash != null)
+        {
+            var hmacValPadded = PadBlock(hmac.Hash);
+            byte[] kIntegrityValueBlock = { 0xA0, 0x67, 0x7F, 0x02, 0xB2, 0x2C, 0x84, 0x33 };
+            var ivVal = GenerateIv(keySalt, kIntegrityValueBlock, _blockSize);
+            var encryptedHmacValue = EncryptWithAes(hmacValPadded, encryptionKey, ivVal, false);
+            
+            XNamespace ns = "http://schemas.microsoft.com/office/2006/encryption";
+            if (xmlDoc.Root != null)
+                xmlDoc.Root.Element(ns + "dataIntegrity")
+                    ?.SetAttributeValue("encryptedHmacValue", Convert.ToBase64String(encryptedHmacValue));
+        }
+        
     }
 
-    private void CreateEncryptedFile(string outputPath, XDocument xmlDoc, byte[] encryptedPackage)
+    private static void CreateEncryptedFile(string outputPath, XDocument xmlDoc, byte[] encryptedPackage)
     {
-        using var root = RootStorage.Create(outputPath);
-        
-        using (var encInfoStream = root.CreateStream("EncryptionInfo"))
-        using (var writer = new BinaryWriter(encInfoStream))
+        var fileSystem = new POIFSFileSystem();
+
+        var xmlString = xmlDoc.ToString(SaveOptions.DisableFormatting);
+        var xmlBytes = Encoding.UTF8.GetBytes(xmlString);
+
+        using (var encInfoPayload = new MemoryStream())
         {
-            writer.Write((ushort)4);
-            writer.Write((ushort)4);
-            writer.Write((uint)0x40);
-            
-            var xmlString = xmlDoc.ToString(SaveOptions.DisableFormatting);
-            var xmlBytes = Encoding.UTF8.GetBytes(xmlString);
-            writer.Write(xmlBytes);
+            using (var writer = new BinaryWriter(encInfoPayload, Encoding.UTF8, leaveOpen: true))
+            {
+                writer.Write((ushort)4);
+                writer.Write((ushort)4);
+                writer.Write((uint)0x40);
+                writer.Write(xmlBytes);
+                writer.Flush();
+            }
+
+            encInfoPayload.Position = 0;
+            fileSystem.CreateDocument(encInfoPayload, "EncryptionInfo");
         }
 
-        using (var encPackageStream = root.CreateStream("EncryptedPackage"))
+        using (var encPackagePayload = new MemoryStream(encryptedPackage, writable: false))
         {
-            encPackageStream.Write(encryptedPackage, 0, encryptedPackage.Length);
+            fileSystem.CreateDocument(encPackagePayload, "EncryptedPackage");
         }
+
+        using var outputStream = File.Create(outputPath);
+        fileSystem.WriteFileSystem(outputStream);
     }
 
     private static byte[] RandomBytes(int length)
@@ -297,7 +310,7 @@ public partial class Encrypt
         return bytes;
     }
 
-    private byte[] PadBlock(byte[] data)
+    private static byte[] PadBlock(byte[] data)
     {
         int padded = ((data.Length + 15) / 16) * 16;
         var result = new byte[padded];
@@ -314,7 +327,7 @@ public partial class Encrypt
         {
             hashAlg.TransformBlock(salt, 0, salt.Length, null, 0);
             hashAlg.TransformFinalBlock(pwb, 0, pwb.Length);
-            var h = (byte[])hashAlg.Hash.Clone();
+            var h = (byte[])hashAlg.Hash?.Clone()!;
 
             for (var i = 0; i < spin; i++)
             {
@@ -322,7 +335,7 @@ public partial class Encrypt
                 var iter = BitConverter.GetBytes(i);
                 hashAlg.TransformBlock(iter, 0, 4, null, 0);
                 hashAlg.TransformFinalBlock(h, 0, h.Length);
-                h = (byte[])hashAlg.Hash.Clone();
+                h = (byte[])hashAlg.Hash?.Clone()!;
             }
 
             return h;
@@ -348,7 +361,7 @@ public partial class Encrypt
         hashAlg.TransformFinalBlock(blk, 0, blk.Length);
         var d = hashAlg.Hash;
         var k = new byte[ks];
-        Array.Copy(d, k, Math.Min(d.Length, ks));
+        if (d != null) Array.Copy(d, k, Math.Min(d.Length, ks));
         return k;
     }
 
@@ -366,7 +379,7 @@ public partial class Encrypt
         hashAlg.TransformFinalBlock(blk, 0, blk.Length);
         var d = hashAlg.Hash;
         var iv = new byte[bs];
-        Array.Copy(d, iv, Math.Min(d.Length, bs));
+        if (d != null) Array.Copy(d, iv, Math.Min(d.Length, bs));
         return iv;
     }
 
@@ -378,7 +391,7 @@ public partial class Encrypt
         hashAlg.TransformFinalBlock(blockBytes, 0, 4);
         var hash = hashAlg.Hash;
         var iv = new byte[bs];
-        Array.Copy(hash, iv, Math.Min(hash.Length, bs));
+        if (hash != null) Array.Copy(hash, iv, Math.Min(hash.Length, bs));
         return iv;
     }
 

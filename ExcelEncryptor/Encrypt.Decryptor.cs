@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
-using OpenMcdf;
+using NPOI.POIFS.FileSystem;
 
 namespace ExcelEncryptor;
 
@@ -37,7 +37,8 @@ public partial class Encrypt
 
         try
         {
-            using var root = RootStorage.OpenRead(encryptedPath);
+            using var encryptedStream = File.OpenRead(encryptedPath);
+            var root = new POIFSFileSystem(encryptedStream);
             
             var (encryptionInfo, xmlString) = ReadEncryptionInfo(root);
             var secretKey = VerifyPasswordAndGetKey(password, encryptionInfo, xmlString);
@@ -72,12 +73,12 @@ public partial class Encrypt
     /// <summary>
     /// EncryptionInfo ストリームを読み取る
     /// </summary>
-    private static (EncryptionInfo info, string xmlString) ReadEncryptionInfo(RootStorage root)
+    private static (EncryptionInfo info, string xmlString) ReadEncryptionInfo(POIFSFileSystem root)
     {
-        CfbStream encInfoStream;
+        DocumentInputStream encInfoStream;
         try
         {
-            encInfoStream = root.OpenStream("EncryptionInfo");
+            encInfoStream = root.CreateDocumentInputStream("EncryptionInfo");
         }
         catch
         {
@@ -93,8 +94,10 @@ public partial class Encrypt
             
             if (versionMajor != 4 || versionMinor != 4)
                 throw new NotSupportedException($"Unsupported encryption version: {versionMajor}.{versionMinor}");
-            
-            var xmlBytes = reader.ReadBytes((int)(encInfoStream.Length - 8));
+
+            using var xmlBuffer = new MemoryStream();
+            encInfoStream.CopyTo(xmlBuffer);
+            var xmlBytes = xmlBuffer.ToArray();
             var xmlString = Encoding.UTF8.GetString(xmlBytes);
             var xmlDoc = XDocument.Parse(xmlString);
             
@@ -245,9 +248,17 @@ public partial class Encrypt
     /// <summary>
     /// 暗号化されたパッケージを復号化
     /// </summary>
-    private static byte[] DecryptPackage(RootStorage root, byte[] secretKey, EncryptionInfo info)
+    private static byte[] DecryptPackage(POIFSFileSystem root, byte[] secretKey, EncryptionInfo info)
     {
-        var encPackageStream = root.OpenStream("EncryptedPackage");
+        DocumentInputStream encPackageStream;
+        try
+        {
+            encPackageStream = root.CreateDocumentInputStream("EncryptedPackage");
+        }
+        catch
+        {
+            throw new InvalidOperationException("File is not encrypted (EncryptedPackage missing)");
+        }
         
         using (encPackageStream)
         using (var reader = new BinaryReader(encPackageStream))

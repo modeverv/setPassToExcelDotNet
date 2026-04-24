@@ -43,8 +43,3 @@ wb.Write(outStream);
 
 Apache-2.0
 
-## dependency
-
-- OpenMcdf https://github.com/ironfede/openmcdf
-    - License MPL-2.0 https://github.com/ironfede/openmcdf?tab=MPL-2.0-1-ov-file#readme 
-

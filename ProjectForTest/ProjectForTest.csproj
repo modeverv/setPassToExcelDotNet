@@ -11,7 +11,6 @@
 
     <ItemGroup>
         <PackageReference Include="NPOI" Version="2.7.5"/>
-        <PackageReference Include="OpenMcdf" Version="3.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
