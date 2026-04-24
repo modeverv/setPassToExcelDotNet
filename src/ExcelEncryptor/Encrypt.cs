@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
@@ -101,6 +102,8 @@ public partial class Encrypt
         
         if (password.Length > 255)
             throw new ArgumentException("Password is too long (max 255 characters)", nameof(password));
+
+        ValidateWorkbookPackage(wbByte);
         
         try
         {
@@ -112,6 +115,46 @@ public partial class Encrypt
         catch (Exception ex)
         {
             throw new InvalidOperationException("Failed to encrypt file", ex);
+        }
+    }
+
+    public void EncryptToStream(Stream inputStream, Stream outputStream, string password)
+    {
+        if (inputStream == null)
+            throw new ArgumentNullException(nameof(inputStream));
+
+        if (outputStream == null)
+            throw new ArgumentNullException(nameof(outputStream));
+
+        if (!inputStream.CanRead)
+            throw new ArgumentException("Input stream must be readable", nameof(inputStream));
+
+        if (!outputStream.CanWrite)
+            throw new ArgumentException("Output stream must be writable", nameof(outputStream));
+
+        using var buffer = new MemoryStream();
+        inputStream.CopyTo(buffer);
+        var bytes = buffer.ToArray();
+
+        if (bytes.Length == 0)
+            throw new ArgumentException("Input stream cannot be empty", nameof(inputStream));
+
+        var tempOutputPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-stream-encrypted-{Guid.NewGuid():N}.bin");
+
+        try
+        {
+            EncryptToFile(bytes, tempOutputPath, password);
+
+            using var tempOutput = File.OpenRead(tempOutputPath);
+            tempOutput.CopyTo(outputStream);
+
+            if (outputStream.CanSeek)
+                outputStream.Position = 0;
+        }
+        finally
+        {
+            if (File.Exists(tempOutputPath))
+                File.Delete(tempOutputPath);
         }
     }
     
@@ -271,7 +314,7 @@ public partial class Encrypt
         
     }
     
-    private void CreateEncryptedFile(string outputPath, XDocument xmlDoc, byte[] encryptedPackage)
+    private static void CreateEncryptedFile(string outputPath, XDocument xmlDoc, byte[] encryptedPackage)
     {
         using var root = RootStorage.Create(outputPath);
         
@@ -292,6 +335,22 @@ public partial class Encrypt
             encPackageStream.Write(encryptedPackage, 0, encryptedPackage.Length);
         }
     }
+
+    private static void ValidateWorkbookPackage(byte[] wbByte)
+    {
+        try
+        {
+            using var buffer = new MemoryStream(wbByte, writable: false);
+            using var archive = new ZipArchive(buffer, ZipArchiveMode.Read, leaveOpen: false);
+
+            if (archive.GetEntry("[Content_Types].xml") == null || archive.GetEntry("xl/workbook.xml") == null)
+                throw new InvalidOperationException("Input file is not a valid OOXML workbook");
+        }
+        catch (InvalidDataException ex)
+        {
+            throw new InvalidOperationException("Input file is not a valid OOXML workbook", ex);
+        }
+    }
     
     private static byte[] RandomBytes(int length)
     {
@@ -301,7 +360,7 @@ public partial class Encrypt
         return bytes;
     }
     
-    private byte[] PadBlock(byte[] data)
+    private static byte[] PadBlock(byte[] data)
     {
         var padded = (data.Length + 15) / 16 * 16;
         var result = new byte[padded];

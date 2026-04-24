@@ -39,8 +39,8 @@ public partial class Encrypt
         {
             using var root = RootStorage.OpenRead(encryptedPath);
             
-            var (encryptionInfo, xmlString) = ReadEncryptionInfo(root);
-            var secretKey = VerifyPasswordAndGetKey(password, encryptionInfo, xmlString);
+            var encryptionInfo = ReadEncryptionInfo(root);
+            var secretKey = VerifyPasswordAndGetKey(password, encryptionInfo);
             var decryptedData = DecryptPackage(root, secretKey, encryptionInfo);
             
             return decryptedData;
@@ -66,13 +66,52 @@ public partial class Encrypt
         var decryptedData = Decrypt(encryptedPath, password);
         File.WriteAllBytes(outputPath, decryptedData);
     }
+
+    public static void DecryptToStream(Stream encryptedStream, Stream outputStream, string password)
+    {
+        if (encryptedStream == null)
+            throw new ArgumentNullException(nameof(encryptedStream));
+
+        if (outputStream == null)
+            throw new ArgumentNullException(nameof(outputStream));
+
+        if (!encryptedStream.CanRead)
+            throw new ArgumentException("Input stream must be readable", nameof(encryptedStream));
+
+        if (!outputStream.CanWrite)
+            throw new ArgumentException("Output stream must be writable", nameof(outputStream));
+
+        using var buffer = new MemoryStream();
+        encryptedStream.CopyTo(buffer);
+        var bytes = buffer.ToArray();
+
+        if (bytes.Length == 0)
+            throw new ArgumentException("Input stream cannot be empty", nameof(encryptedStream));
+
+        var tempEncryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-stream-decrypted-{Guid.NewGuid():N}.bin");
+
+        try
+        {
+            File.WriteAllBytes(tempEncryptedPath, bytes);
+            var decryptedData = Decrypt(tempEncryptedPath, password);
+            outputStream.Write(decryptedData, 0, decryptedData.Length);
+
+            if (outputStream.CanSeek)
+                outputStream.Position = 0;
+        }
+        finally
+        {
+            if (File.Exists(tempEncryptedPath))
+                File.Delete(tempEncryptedPath);
+        }
+    }
     
     #region Internal Classes
     
     /// <summary>
     ///     暗号化情報を保持するクラス
     /// </summary>
-    private class EncryptionInfo
+    private sealed class EncryptionInfo
     {
         public int BlockSize { get; set; }
         public int KeyBits { get; set; }
@@ -85,8 +124,6 @@ public partial class Encrypt
         public byte[] EncryptedVerifier { get; set; } = Array.Empty<byte>();
         public byte[] EncryptedVerifierHash { get; set; } = Array.Empty<byte>();
         public byte[] EncryptedKey { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedHmacKey { get; set; } = Array.Empty<byte>();
-        public byte[] EncryptedHmacValue { get; set; } = Array.Empty<byte>();
     }
     
     #endregion
@@ -96,7 +133,7 @@ public partial class Encrypt
     /// <summary>
     ///     EncryptionInfo ストリームを読み取る
     /// </summary>
-    private static (EncryptionInfo info, string xmlString) ReadEncryptionInfo(RootStorage root)
+    private static EncryptionInfo ReadEncryptionInfo(RootStorage root)
     {
         CfbStream encInfoStream;
         try
@@ -121,8 +158,8 @@ public partial class Encrypt
             var xmlBytes = reader.ReadBytes((int)(encInfoStream.Length - 8));
             var xmlString = Encoding.UTF8.GetString(xmlBytes);
             var xmlDoc = XDocument.Parse(xmlString);
-            
-            return (ParseEncryptionInfo(xmlDoc), xmlString);
+
+            return ParseEncryptionInfo(xmlDoc);
         }
     }
     
@@ -153,16 +190,6 @@ public partial class Encrypt
             KeySalt = Convert.FromBase64String(keyData.Attribute("saltValue")?.Value ?? "")
         };
         
-        // dataIntegrity
-        var dataIntegrity = root.Element(ns + "dataIntegrity");
-        if (dataIntegrity != null)
-        {
-            info.EncryptedHmacKey = Convert.FromBase64String(
-                dataIntegrity.Attribute("encryptedHmacKey")?.Value ?? "");
-            info.EncryptedHmacValue = Convert.FromBase64String(
-                dataIntegrity.Attribute("encryptedHmacValue")?.Value ?? "");
-        }
-        
         // encryptedKey
         var keyEncryptors = root.Element(ns + "keyEncryptors");
         var keyEncryptor = keyEncryptors?.Element(ns + "keyEncryptor");
@@ -188,7 +215,7 @@ public partial class Encrypt
     /// <summary>
     ///     パスワードを検証して暗号化キーを取得
     /// </summary>
-    private static byte[] VerifyPasswordAndGetKey(string password, EncryptionInfo info, string xmlString)
+    private static byte[] VerifyPasswordAndGetKey(string password, EncryptionInfo info)
     {
         // ハッシュアルゴリズムを決定
         using var hashAlg = CreateHashAlgorithm(info.HashAlgorithm);
