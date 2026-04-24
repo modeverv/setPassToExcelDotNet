@@ -47,6 +47,12 @@ encryptor.EncryptToFile(xlsxBytes, "output.xlsx", "password");
 Supported key sizes: `Aes128` (default), `Aes192`, `Aes256`  
 Supported hash algorithms: `Sha1` (default), `Sha256`, `Sha384`, `Sha512`, `Md5`
 
+### Recommended and legacy settings
+
+- Recommended for new files: `Aes256` + `Sha512`
+- Legacy compatibility: `Sha1` and `Md5` are kept for compatibility with older environments
+- Security note: `Md5` is not recommended for new encryption
+
 ## Decryption
 
 ```csharp

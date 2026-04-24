@@ -12,6 +12,12 @@ Password-protect and decrypt `.xlsx` / `.xlsm` files in .NET — compatible with
 - Cross-compatible with Java POI encrypted files
 - No dependency on NPOI or ClosedXML — works with any xlsx source
 
+## Security defaults
+
+- Recommended for new encryption: `Aes256` + `Sha512`
+- Compatibility-only legacy options: `Sha1`, `Md5`
+- `Md5` is supported only for compatibility and is not recommended for new files
+
 ## Repository structure
 
 ```
