@@ -65,6 +65,35 @@ public class PoiInteropTests
         Assert.Contains("Invalid password", ex.Message);
     }
 
+    [Theory]
+    [InlineData("simple")]
+    [InlineData("formulas")]
+    [InlineData("styles")]
+    [InlineData("japanese")]
+    public void Decrypt_PoiAes256Sha512TestVectors_ReturnsOriginalBytes(string name)
+    {
+        var root = FindRepositoryRoot();
+        var plainPath = Path.Combine(root, "test-vectors", "plain", $"{name}.xlsx");
+        var encryptedPath = Path.Combine(root, "test-vectors", "encrypted-by-apache-poi", $"{name}_aes256_sha512.xlsx");
+
+        var decrypted = Encrypt.Decrypt(encryptedPath, Password);
+        Assert.Equal(File.ReadAllBytes(plainPath), decrypted);
+    }
+
+    [Theory]
+    [InlineData("simple")]
+    [InlineData("formulas")]
+    [InlineData("styles")]
+    [InlineData("japanese")]
+    public void Decrypt_PoiAes256Sha512TestVectors_WithWrongPassword_ThrowsUnauthorizedAccessException(string name)
+    {
+        var root = FindRepositoryRoot();
+        var encryptedPath = Path.Combine(root, "test-vectors", "encrypted-by-apache-poi", $"{name}_aes256_sha512.xlsx");
+
+        var ex = Assert.Throws<UnauthorizedAccessException>(() => Encrypt.Decrypt(encryptedPath, "wrong_password"));
+        Assert.Contains("Invalid password", ex.Message);
+    }
+
     private static bool TryDecryptWithPoi(string root, string encryptedPath, string outputPath, string password, out string reason)
     {
         if (!TryEnsurePoiChecker(root, out var jarPath, out reason))
