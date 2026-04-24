@@ -3,7 +3,7 @@ services:
     platform: ${LO_VNC_PLATFORM:-linux/amd64}
     build:
       context: .
-      dockerfile: docker/vnc/Dockerfile
+      dockerfile: docker/Dockerfile
     container_name: lo-vnc
     working_dir: /workspace
     volumes:
