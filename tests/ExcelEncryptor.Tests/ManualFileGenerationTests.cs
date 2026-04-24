@@ -32,10 +32,15 @@ public class ManualFileGenerationTests
 
     private static IEnumerable<(string InputRelativePath, string OutputFileName)> GetScenarios()
     {
-        yield return (Path.Combine("test-vectors", "plain", "simple.xlsx"), "simple_aes256_sha512.xlsx");
-        yield return (Path.Combine("test-vectors", "plain", "japanese.xlsx"), "japanese_aes256_sha512.xlsx");
-        yield return (Path.Combine("test-vectors", "xlsm", "excel_sample.xlsm"), "excel_sample_aes256_sha512.xlsm");
-        yield return (Path.Combine("test-vectors", "image", "image.xlsx"), "excel_image_sample_aes256_sha512.xlsx");        
+        yield return (Path.Combine("test-vectors", "plain", "simple.xlsx"), "simple_en.xlsx");
+        yield return (Path.Combine("test-vectors", "plain", "japanese.xlsx"), "japanese_en.xlsx");
+        yield return (Path.Combine("test-vectors", "xlsm", "excel_sample.xlsm"), "excel_en.xlsm");
+        yield return (Path.Combine("test-vectors", "image", "image.xlsx"), "excel_image_en.xlsx");
+
+        yield return (Path.Combine("test-vectors", "plain", "simple.xlsx"), "simple_ja.xlsx");
+        yield return (Path.Combine("test-vectors", "plain", "japanese.xlsx"), "japanese_ja.xlsx");
+        yield return (Path.Combine("test-vectors", "xlsm", "excel_sample.xlsm"), "excel_ja.xlsm");
+        yield return (Path.Combine("test-vectors", "image", "image.xlsx"), "excel_image_ja.xlsx");
     }
 
     private static string FindRepositoryRoot()

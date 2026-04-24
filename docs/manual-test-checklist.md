@@ -25,9 +25,14 @@ Environment は最低でも `OS version + App version` を記録する。
   - `test-vectors/plain/japanese.xlsx`
   - `test-vectors/xlsm/excel_sample.xlsm`
 - 生成ファイル（`dotnet test` で作成）:
-  - `test-manual-files/simple_aes256_sha512.xlsx`
-  - `test-manual-files/japanese_aes256_sha512.xlsx`
-  - `test-manual-files/excel_sample_aes256_sha512.xlsm`
+  - `test-manual-files/excel_image_en.xlsx`
+  - `test-manual-files/simple_en.xlsx`
+  - `test-manual-files/japanese_en.xlsx`
+  - `test-manual-files/excel_sampl_en.xlsm`
+  - `test-manual-files/excel_image_ja.xlsx`
+  - `test-manual-files/simple_ja.xlsx`
+  - `test-manual-files/japanese_ja.xlsx`
+  - `test-manual-files/excel_sample_ja.xlsm`
 
 ## Excel for Windows
 
