@@ -110,10 +110,10 @@ ExcelEncryptor is tested with third-party implementations and real-world workboo
 ### Manual GUI verification versions
 
 | Application | Last manually verified version |
-|---|---|
-| Microsoft Excel for Windows | TBD (no recorded release check yet) |
-| Microsoft Excel for Mac | TBD (no recorded release check yet) |
-| LibreOffice Calc | TBD (no recorded release check yet) |
+|---|--------------------------------|
+| Microsoft Excel for Windows | 16.0.19127.20302               |
+| Microsoft Excel for Mac | 16.105.1                       |
+| LibreOffice Calc | 24.2.7.2                       |
 
 Version records are tracked in `docs/manual-test-checklist.md`.
 
