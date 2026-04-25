@@ -20,8 +20,8 @@ public class ReadmeSamplesSmokeTests
 
         try
         {
-            ExcelEncryptor.Encrypt.FromFileToFile(inputPath, encryptedPath, Password);
-            var decryptedBytes = ExcelEncryptor.Encrypt.Decrypt(encryptedPath, Password);
+            Encrypt.FromFileToFile(inputPath, encryptedPath, Password);
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
 
             Assert.Equal(File.ReadAllBytes(inputPath), decryptedBytes);
         }
@@ -47,8 +47,8 @@ public class ReadmeSamplesSmokeTests
                 workbookBytes = stream.ToArray();
             }
 
-            ExcelEncryptor.Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
-            var decryptedBytes = ExcelEncryptor.Encrypt.Decrypt(encryptedPath, Password);
+            Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
 
             Assert.Equal(workbookBytes, decryptedBytes);
         }
@@ -74,8 +74,8 @@ public class ReadmeSamplesSmokeTests
                 workbookBytes = stream.ToArray();
             }
 
-            ExcelEncryptor.Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
-            var decryptedBytes = ExcelEncryptor.Encrypt.Decrypt(encryptedPath, Password);
+            Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
 
             Assert.Equal(workbookBytes, decryptedBytes);
         }
@@ -94,8 +94,8 @@ public class ReadmeSamplesSmokeTests
         {
             var workbookBytes = CreateOpenXmlWorkbookBytes();
 
-            ExcelEncryptor.Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
-            var decryptedBytes = ExcelEncryptor.Encrypt.Decrypt(encryptedPath, Password);
+            Encrypt.FromBytesToFile(workbookBytes, encryptedPath, Password);
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
 
             Assert.Equal(workbookBytes, decryptedBytes);
         }

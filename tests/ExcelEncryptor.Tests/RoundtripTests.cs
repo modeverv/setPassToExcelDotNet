@@ -89,6 +89,29 @@ public class RoundtripTests
     }
 
     [Fact]
+    public void EncryptThenDecrypt_XlsmFixture_PreservesAllBytes()
+    {
+        var originalPath = GetXlsmTestVectorPath();
+        var originalBytes = File.ReadAllBytes(originalPath);
+        var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-xlsm-fixture-{Guid.NewGuid():N}.xlsx");
+
+        try
+        {
+            var encryptor = new Encrypt(AesKeySize.Aes256, HashAlgorithmType.Sha512);
+            encryptor.EncryptFile(originalPath, encryptedPath, Password);
+
+            var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
+            Assert.Equal(originalBytes, decryptedBytes);
+
+            Assert.Equal(ReadZipEntry(originalBytes, "xl/vbaProject.bin"), ReadZipEntry(decryptedBytes, "xl/vbaProject.bin"));
+        }
+        finally
+        {
+            DeleteIfExists(encryptedPath);
+        }
+    }
+
+    [Fact]
     public void Decrypt_Xlsm_WithWrongPassword_ThrowsUnauthorizedAccessException()
     {
         var originalPath = CreateXlsmTestVector();
@@ -318,6 +341,17 @@ public class RoundtripTests
 
         if (!File.Exists(path))
             throw new FileNotFoundException("Test vector not found.", path);
+
+        return path;
+    }
+
+    private static string GetXlsmTestVectorPath()
+    {
+        var root = FindRepositoryRoot();
+        var path = Path.Combine(root, "test-vectors", "xlsm", "excel_sample.xlsm");
+
+        if (!File.Exists(path))
+            throw new FileNotFoundException("XLSM test vector not found.", path);
 
         return path;
     }

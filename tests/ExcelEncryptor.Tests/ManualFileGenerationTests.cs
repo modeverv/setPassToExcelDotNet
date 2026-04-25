@@ -4,14 +4,12 @@ namespace ExcelEncryptor.Tests;
 
 public class ManualFileGenerationTests
 {
-    private const string Password = "pass";
-
     [Fact]
     public void Generate_ManualTestFiles_WritesEncryptedWorkbooks()
     {
         var root = FindRepositoryRoot();
         var outputDirectory = Path.Combine(root, "test-manual-files");
-        var encryptor = new ExcelEncryptor.Encrypt(ExcelEncryptor.AesKeySize.Aes256, ExcelEncryptor.HashAlgorithmType.Sha512);
+        var encryptor = new Encrypt(AesKeySize.Aes256, HashAlgorithmType.Sha512);
 
         Directory.CreateDirectory(outputDirectory);
 
@@ -26,7 +24,7 @@ public class ManualFileGenerationTests
             encryptor.EncryptFile(inputPath, outputPath, scenario.Passwod);
 
             Assert.True(File.Exists(outputPath));
-            Assert.Equal(File.ReadAllBytes(inputPath), ExcelEncryptor.Encrypt.Decrypt(outputPath, scenario.Passwod));
+            Assert.Equal(File.ReadAllBytes(inputPath), Encrypt.Decrypt(outputPath, scenario.Passwod));
         }
     }
 

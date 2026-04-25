@@ -1,8 +1,5 @@
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
-using ExcelEncryptor;
 using Xunit;
 
 namespace ExcelEncryptor.Interop.PoiTests;
@@ -14,11 +11,13 @@ public class PoiInteropTests
     private static string? _checkerJarPath;
     private static string? _buildFailureReason;
 
-    [Fact]
-    public void Encrypt_WithAes256Sha512_CanBeDecryptedByApachePoi()
+    [Theory]
+    [InlineData("test-vectors", "plain", "a.xlsx")]
+    [InlineData("test-vectors", "xlsm", "excel_sample.xlsm")]
+    public void Encrypt_WithAes256Sha512_CanBeDecryptedByApachePoi(string baseDir, string subDir, string fileName)
     {
         var root = FindRepositoryRoot();
-        var plainPath = Path.Combine(root, "test-vectors", "plain", "a.xlsx");
+        var plainPath = Path.Combine(root, baseDir, subDir, fileName);
         var encryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-poi-encrypted-{Guid.NewGuid():N}.xlsx");
         var poiDecryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-poi-decrypted-{Guid.NewGuid():N}.xlsx");
 
@@ -63,6 +62,32 @@ public class PoiInteropTests
 
         var ex = Assert.Throws<UnauthorizedAccessException>(() => Encrypt.Decrypt(poiEncryptedPath, "wrong_password"));
         Assert.Contains("Invalid password", ex.Message);
+    }
+
+    [Fact]
+    public void Decrypt_FileEncryptedByApachePoi_Xlsm_ReturnsOriginalPackage()
+    {
+        var root = FindRepositoryRoot();
+        var plainPath = Path.Combine(root, "test-vectors", "xlsm", "excel_sample.xlsm");
+        var poiEncryptedPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-poi-xlsm-encrypted-{Guid.NewGuid():N}.xlsm");
+
+        try
+        {
+            if (!TryEncryptWithPoi(root, plainPath, poiEncryptedPath, Password, out var reason))
+            {
+                if (IsPoiInteropRequired())
+                    Assert.Fail(reason);
+
+                return;
+            }
+
+            var decrypted = Encrypt.Decrypt(poiEncryptedPath, Password);
+            Assert.Equal(File.ReadAllBytes(plainPath), decrypted);
+        }
+        finally
+        {
+            DeleteIfExists(poiEncryptedPath);
+        }
     }
 
     [Theory]
@@ -153,6 +178,15 @@ public class PoiInteropTests
         return TryRunProcess("java", args, root, out reason);
     }
 
+    private static bool TryEncryptWithPoi(string root, string inputPath, string outputPath, string password, out string reason)
+    {
+        if (!TryEnsurePoiChecker(root, out var jarPath, out reason))
+            return false;
+
+        var args = $"-jar \"{jarPath}\" encrypt \"{inputPath}\" \"{outputPath}\" \"{password}\"";
+        return TryRunProcess("java", args, root, out reason);
+    }
+
     private static bool TryEnsurePoiChecker(string root, out string jarPath, out string reason)
     {
         lock (BuildLock)
@@ -203,20 +237,18 @@ public class PoiInteropTests
     {
         try
         {
-            using var process = new Process
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = fileName,
-                    Arguments = arguments,
-                    WorkingDirectory = workingDirectory,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
+                FileName = fileName,
+                Arguments = arguments,
+                WorkingDirectory = workingDirectory,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
-
+            
             process.Start();
             var stdout = process.StandardOutput.ReadToEnd();
             var stderr = process.StandardError.ReadToEnd();

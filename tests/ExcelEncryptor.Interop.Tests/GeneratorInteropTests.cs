@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using ExcelEncryptor;
 using NPOI.XSSF.UserModel;
 using Xunit;
 
@@ -285,20 +280,18 @@ public class GeneratorInteropTests
     {
         try
         {
-            using var process = new Process
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = fileName,
-                    Arguments = arguments,
-                    WorkingDirectory = workingDirectory,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
+                FileName = fileName,
+                Arguments = arguments,
+                WorkingDirectory = workingDirectory,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
-
+            
             process.Start();
             var stdout = process.StandardOutput.ReadToEnd();
             var stderr = process.StandardError.ReadToEnd();

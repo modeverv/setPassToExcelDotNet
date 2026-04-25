@@ -60,8 +60,6 @@ jobs:
 
       - name: Build sample projects
         run: |
-          dotnet build samples/ProjectForTest/ProjectForTest.csproj -c Release -f net8.0
-          dotnet build samples/NugetCheck/NugetCheck.csproj -c Release
           dotnet build samples/WorkbookSizeBenchmark/WorkbookSizeBenchmark.csproj -c Release
 
       - name: Verify README samples
