@@ -28,11 +28,11 @@ Environment は最低でも `OS version + App version` を記録する。
   - `test-manual-files/excel_image_en.xlsx`
   - `test-manual-files/simple_en.xlsx`
   - `test-manual-files/japanese_en.xlsx`
-  - `test-manual-files/excel_sampl_en.xlsm`
+  - `test-manual-files/excel_en.xlsm`
   - `test-manual-files/excel_image_ja.xlsx`
   - `test-manual-files/simple_ja.xlsx`
   - `test-manual-files/japanese_ja.xlsx`
-  - `test-manual-files/excel_sample_ja.xlsm`
+  - `test-manual-files/excel_ja.xlsm`
 
 ## Excel for Windows
 

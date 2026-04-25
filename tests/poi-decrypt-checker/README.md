@@ -28,7 +28,7 @@ java -jar $JAR create <type> <output.xlsx>
 Run from the repository root after building the JAR:
 
 ```bash
-JAR=java-tests/poi-decrypt-checker/target/poi-decrypt-checker-1.0.0-jar-with-dependencies.jar
+JAR=tests/poi-decrypt-checker/target/poi-decrypt-checker-1.0.0-jar-with-dependencies.jar
 
 for type in simple formulas styles japanese; do
   java -jar "$JAR" create "$type" "test-vectors/plain/$type.xlsx"
