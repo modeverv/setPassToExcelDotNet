@@ -131,9 +131,10 @@ dotnet test
 
 This generates encrypted workbooks in `test-manual-files/`:
 
-- `simple_aes256_sha512.xlsx`
-- `japanese_aes256_sha512.xlsx`
-- `excel_sample_aes256_sha512.xlsm`
+- `simple_en.xlsx`, `simple_ja.xlsx`
+- `japanese_en.xlsx`, `japanese_ja.xlsx`
+- `excel_en.xlsm`, `excel_ja.xlsm`
+- `excel_image_en.xlsx`, `excel_image_ja.xlsx`
 
 If you want to refresh only those manual artifacts, run:
 

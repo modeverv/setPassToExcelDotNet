@@ -50,8 +50,7 @@ var encryptor = new ExcelEncryptor.Encrypt(
     hashAlgorithm: HashAlgorithmType.Sha512
 );
 
-byte[] xlsxBytes = File.ReadAllBytes("input.xlsx");
-encryptor.EncryptToFile(xlsxBytes, "output.xlsx", "password");
+encryptor.EncryptFile("input.xlsx", "output.xlsx", "password");
 ```
 
 Supported key sizes: `Aes128` (default), `Aes192`, `Aes256`  
