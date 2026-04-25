@@ -10,11 +10,11 @@
 
 ## Release Record
 
-| Release Version | Check Date | Checker  | Environment | Result | Notes |
-|-----------------|------------|----------|-------------|--------|-------|
-| 2.0.5           | 2026-04-25 | modeverv | mac/win     | OK     | -     |
+| Release Version | Check Date | Checker  | Environment   | Result | Notes |
+|-----------------|------------|----------|---------------|--------|-------|
+| 2.0.5           | 2026-04-25 | modeverv | mac/win/linux | OK     | -     |
 
-Environment は最低でも `OS version + App version` を記録する。
+Environment は最低でも `OS version` を記録する。
 
 ## Test Inputs
 
