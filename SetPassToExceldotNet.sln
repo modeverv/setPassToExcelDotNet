@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelEncryptor.Interop.PoiT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelEncryptor.Interop.Tests", "tests\ExcelEncryptor.Interop.Tests\ExcelEncryptor.Interop.Tests.csproj", "{6C0D8D90-8AB2-4B5E-A4C5-3ED6B2D9B53F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkbookSizeBenchmark", "samples\WorkbookSizeBenchmark\WorkbookSizeBenchmark.csproj", "{C2B4A146-5067-460A-9C5A-8C27B934A65B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +30,5 @@ Global
 		{6C0D8D90-8AB2-4B5E-A4C5-3ED6B2D9B53F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C0D8D90-8AB2-4B5E-A4C5-3ED6B2D9B53F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C0D8D90-8AB2-4B5E-A4C5-3ED6B2D9B53F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2B4A146-5067-460A-9C5A-8C27B934A65B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2B4A146-5067-460A-9C5A-8C27B934A65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2B4A146-5067-460A-9C5A-8C27B934A65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2B4A146-5067-460A-9C5A-8C27B934A65B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

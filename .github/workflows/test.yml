@@ -58,10 +58,6 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack src/ExcelEncryptor/ExcelEncryptor.csproj -c Release --no-build
 
-      - name: Build sample projects
-        run: |
-          dotnet build samples/WorkbookSizeBenchmark/WorkbookSizeBenchmark.csproj -c Release
-
       - name: Verify README samples
         run: dotnet test tests/ExcelEncryptor.Interop.Tests/ExcelEncryptor.Interop.Tests.csproj --filter FullyQualifiedName~ReadmeSamplesSmokeTests
 

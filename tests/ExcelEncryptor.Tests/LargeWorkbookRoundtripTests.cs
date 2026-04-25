@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace ExcelEncryptor.Tests;
 
@@ -10,7 +12,7 @@ public sealed class LargeWorkbookSerialCollection
 }
 
 [Collection("LargeWorkbookSerial")]
-public class LargeWorkbookRoundtripTests
+public class LargeWorkbookRoundtripTests(ITestOutputHelper output)
 {
     private const string Password = "pass";
 
@@ -25,9 +27,17 @@ public class LargeWorkbookRoundtripTests
         {
             var originalBytes = File.ReadAllBytes(originalPath);
             var encryptor = new Encrypt(AesKeySize.Aes256, HashAlgorithmType.Sha512);
-            encryptor.EncryptFile(originalPath, encryptedPath, Password);
 
+            var encryptWatch = Stopwatch.StartNew();
+            encryptor.EncryptFile(originalPath, encryptedPath, Password);
+            encryptWatch.Stop();
+
+            var decryptWatch = Stopwatch.StartNew();
             var decryptedBytes = Encrypt.Decrypt(encryptedPath, Password);
+            decryptWatch.Stop();
+
+            output.WriteLine($"{sizeMb,4} MB | encrypt: {encryptWatch.ElapsedMilliseconds,6} ms | decrypt: {decryptWatch.ElapsedMilliseconds,6} ms");
+
             Assert.Equal(originalBytes, decryptedBytes);
 
             var wrongPwEx = Assert.Throws<UnauthorizedAccessException>(() => Encrypt.Decrypt(encryptedPath, "wrong_password"));
