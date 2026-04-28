@@ -118,8 +118,8 @@ ExcelEncryptor is tested with third-party implementations and real-world workboo
 | Application | Last manually verified version |
 |---|--------------------------------|
 | Microsoft Excel for Windows | 16.0.19127.20302               |
-| Microsoft Excel for Mac | 16.105.1                       |
-| LibreOffice Calc | 24.2.7.2                       |
+| Microsoft Excel for Mac | 16.108 |
+| LibreOffice Calc | 24.2.7.2 |
 
 Version records are tracked in `docs/manual-test-checklist.md`.
 
