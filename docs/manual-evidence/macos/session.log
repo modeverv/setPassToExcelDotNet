@@ -1,0 +1,56 @@
+== macOS Excel manual verification: 2026年4月28日 火曜日 12:07:36 ==
+[simple_en.xlsx] start
+[simple_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[simple_ja.xlsx] start
+[simple_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[japanese_en.xlsx] start
+[japanese_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[japanese_ja.xlsx] start
+[japanese_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[excel_en.xlsm] start
+[excel_en.xlsm] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[excel_ja.xlsm] start
+[excel_ja.xlsm] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[excel_image_en.xlsx] start
+[excel_image_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+[excel_image_ja.xlsx] start
+[excel_image_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=FAIL reopen-after-save=FAIL no-corruption=FAIL added-sheet=日本語シート note=Excel error -1728: The object you are trying to access does not exist
+== completed: 2026年4月28日 火曜日 12:08:23 ==
+== macOS Excel manual verification: 2026年4月28日 火曜日 12:09:03 ==
+[simple_en.xlsx] start
+[simple_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[simple_ja.xlsx] start
+[simple_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[japanese_en.xlsx] start
+[japanese_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[japanese_ja.xlsx] start
+[japanese_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_en.xlsm] start
+[excel_en.xlsm] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_ja.xlsm] start
+[excel_ja.xlsm] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_image_en.xlsx] start
+[excel_image_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_image_ja.xlsx] start
+[excel_image_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+== completed: 2026年4月28日 火曜日 12:10:12 ==
+== macOS Excel manual verification: 2026年4月28日 火曜日 12:25:37 ==
+[simple_en.xlsx] start
+[simple_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[simple_ja.xlsx] start
+[simple_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=PASS japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[japanese_en.xlsx] start
+[japanese_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[japanese_ja.xlsx] start
+[japanese_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_en.xlsm] start
+[excel_en.xlsm] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_ja.xlsm] start
+[excel_ja.xlsm] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_image_en.xlsx] start
+[excel_image_en.xlsx] password-type=en correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+[excel_image_ja.xlsx] start
+[excel_image_ja.xlsx] password-type=ja correct-password-open=PASS wrong-password-rejected=N/A japanese-sheet-name-retained=PASS reopen-after-save=PASS no-corruption=PASS added-sheet=日本語シート note=
+== completed: 2026年4月28日 火曜日 12:30:33 ==
+[excel_en.xlsm] macro-prompt-enable=PASS note=Clicked "マクロを有効にする" on initial open and reopen prompts.
+[excel_ja.xlsm] macro-prompt-enable=PASS note=Clicked "マクロを有効にする" on initial open and reopen prompts.

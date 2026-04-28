@@ -16,3 +16,317 @@ To regenerate them, run:
 ```bash
 dotnet test tests/ExcelEncryptor.Tests/ExcelEncryptor.Tests.csproj --filter Generate_ManualTestFiles_WritesEncryptedWorkbooks
 ```
+
+## computer use manual test prompts
+### Windows - Excel
+
+### MacOS - Excel
+
+```text
+あなたはこのリポジトリのリリース前手動検証アシスタントです。
+目的は、macOS 上の Microsoft Excel で暗号化 xlsx/xlsm の互換性を手動確認し、
+docs/manual-test-checklist.md の「Excel for Mac」相当項目を満たす証跡を保存することです。
+作業後の git commit は不要です。
+
+# 前提
+- リポジトリルート: /setPassToExcelDotNet
+- 作業コピー用ディレクトリ: docs/manual-evidence/macos/workbooks/
+- 証跡保存先: docs/manual-evidence/macos/
+- 対象ファイル:
+  - test-manual-files/simple_en.xlsx
+  - test-manual-files/simple_ja.xlsx
+  - test-manual-files/japanese_en.xlsx
+  - test-manual-files/japanese_ja.xlsx
+  - test-manual-files/excel_en.xlsm
+  - test-manual-files/excel_ja.xlsm
+  - test-manual-files/excel_image_en.xlsx
+  - test-manual-files/excel_image_ja.xlsx
+- パスワード:
+  - *_en.* は "pass"
+  - *_ja.* は "パスワード"
+- 元ファイルは直接変更しない。必ず作業コピーを作って検証する。
+
+# 実行タスク
+1. Microsoft Excel for Mac を起動する。
+2. macOS バージョン、マシン情報、Excel バージョンを取得する。
+3. 各対象ファイルを docs/manual-evidence/macos/workbooks/ にコピーする。
+4. 各コピーを Excel で開き、正しいパスワードで復号後にシート表示まで確認する。
+5. 各コピーで日本語名のシート `日本語シート` を追加する。
+   - 既に同名シートがある場合は `日本語シート2` など衝突しない名前にする。
+   - 追加したシートの A1 に `日本語シート名保持確認` を入力する。
+6. ファイルを保存して閉じる。
+7. 保存後のファイルをもう一度 Excel で開き、正しいパスワードで復号できることを確認する。
+8. 再オープン後に以下を確認する:
+   - シート内容が表示される
+   - 追加した日本語シート名が崩れていない
+   - 追加シートの A1 が `日本語シート名保持確認` のまま
+   - ファイル破損警告や修復ダイアログが出ない
+9. 可能なら、間違ったパスワードでも開けないことを各 password-type ごとに最低 1 件ずつ確認する。
+   - en: `simple_en.xlsx` に対して誤パスワード
+   - ja: `simple_ja.xlsx` に対して誤パスワード
+10. 各ケースで以下を保存する:
+   - 初回オープン証跡: docs/manual-evidence/macos/<file-base>-open.png
+   - 日本語シート追加後の証跡: docs/manual-evidence/macos/<file-base>-ja-sheet-added.png
+   - 保存後再オープン証跡: docs/manual-evidence/macos/<file-base>-reopen.png
+   - 実行ログ: docs/manual-evidence/macos/session.log に追記
+11. 実行結果を docs/manual-evidence/macos/summary.md に作成または更新する。
+12. docs/manual-test-checklist.md に今回の macOS 手動検証結果を末尾へ追記する。
+
+# macOS / Excel 自動操作の推奨手順
+- Excel 操作は AppleScript (`osascript`) を優先してよい。
+- `open workbook workbook file name "<absolute-path>" password "<password>"` で対象の作業コピーを開く。
+- AppleScript 実行時に macOS のファイルアクセス権限ダイアログまたはファイル選択ダイアログが出た場合は、Codex の Computer Use で対象ファイルが選択されていることを確認し、`アクセス権を付与` を押下して続行する。
+- `.xlsm` を開く際に `マクロを有効にしますか?` / `Enable Macros` などの確認ダイアログが出た場合は、互換性確認を継続するため `マクロを有効にする` / `Enable Macros` を押下する。押下したことは `session.log` に記録する。
+- ファイル破損警告、修復ダイアログ、内容削除/修復の確認ダイアログが出た場合は、安易に修復して PASS 扱いにしない。スクリーンショットを保存し、そのケースの `no-corruption` を FAIL としてログに記録してから可能な範囲で次ケースへ進む。
+- シート追加直後に `newWs` オブジェクトへ直接 `A1` を書き込むと Excel for Mac で `-1728: The object you are trying to access does not exist` になることがある。日本語シート名を設定した直後は、`active sheet` の `range "A1"` に書き込む。
+
+今回動作確認できた AppleScript の骨子:
+
+~~~applescript
+set repoRoot to "/Users/seijiro/Sync/sync_work/me/SetPassToExceldotNet"
+set evidenceDir to repoRoot & "/docs/manual-evidence/macos"
+set workbookDir to evidenceDir & "/workbooks"
+set sessionLog to evidenceDir & "/session.log"
+set checkValue to "日本語シート名保持確認"
+
+set testCases to {¬
+	{"simple_en.xlsx", "en", "pass", true}, ¬
+	{"simple_ja.xlsx", "ja", "パスワード", true}, ¬
+	{"japanese_en.xlsx", "en", "pass", false}, ¬
+	{"japanese_ja.xlsx", "ja", "パスワード", false}, ¬
+	{"excel_en.xlsm", "en", "pass", false}, ¬
+	{"excel_ja.xlsm", "ja", "パスワード", false}, ¬
+	{"excel_image_en.xlsx", "en", "pass", false}, ¬
+	{"excel_image_ja.xlsx", "ja", "パスワード", false} ¬
+	}
+
+on appendLog(sessionLog, msg)
+	do shell script "printf '%s\n' " & quoted form of msg & " >> " & quoted form of sessionLog
+end appendLog
+
+on captureShot(pathToPng)
+	delay 1
+	do shell script "/usr/sbin/screencapture -x " & quoted form of pathToPng
+end captureShot
+
+on fileBase(fileName)
+	set oldDelims to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to "."
+	set pieces to text items of fileName
+	set AppleScript's text item delimiters to oldDelims
+	if (count of pieces) is 1 then return fileName
+	return items 1 thru -2 of pieces as text
+end fileBase
+
+on uniqueJapaneseSheetName(wb)
+	tell application "Microsoft Excel"
+		set sheetNames to name of every worksheet of wb
+	end tell
+	set candidate to "日本語シート"
+	set suffixNo to 2
+	repeat while sheetNames contains candidate
+		set candidate to "日本語シート" & suffixNo
+		set suffixNo to suffixNo + 1
+	end repeat
+	return candidate
+end uniqueJapaneseSheetName
+
+on closeActiveWorkbookIfAny()
+	tell application "Microsoft Excel"
+		try
+			close active workbook saving no
+		end try
+	end tell
+end closeActiveWorkbookIfAny
+
+tell application "Microsoft Excel"
+	activate
+	set display alerts to false
+end tell
+
+repeat with tc in testCases
+	set fileName to item 1 of tc
+	set passwordType to item 2 of tc
+	set correctPassword to item 3 of tc
+	set shouldCheckWrongPassword to item 4 of tc
+	set baseName to my fileBase(fileName)
+	set workbookPath to workbookDir & "/" & fileName
+	set openShot to evidenceDir & "/" & baseName & "-open.png"
+	set addedShot to evidenceDir & "/" & baseName & "-ja-sheet-added.png"
+	set reopenShot to evidenceDir & "/" & baseName & "-reopen.png"
+	set addedSheetName to ""
+	
+	my closeActiveWorkbookIfAny()
+	tell application "Microsoft Excel"
+		set wb to open workbook workbook file name workbookPath password correctPassword
+		delay 1
+		my captureShot(openShot)
+		
+		set addedSheetName to my uniqueJapaneseSheetName(wb)
+		make new worksheet at after last worksheet of wb
+		set name of active sheet to addedSheetName
+		set value of range "A1" of active sheet to checkValue
+		delay 1
+		my captureShot(addedShot)
+		save wb
+		close wb saving yes
+		
+		set wb2 to open workbook workbook file name workbookPath password correctPassword
+		activate object worksheet addedSheetName of wb2
+		set reopenedValue to value of range "A1" of active sheet
+		if reopenedValue is not checkValue then error "A1 mismatch after reopen"
+		delay 1
+		my captureShot(reopenShot)
+		close wb2 saving no
+	end tell
+	
+	if shouldCheckWrongPassword then
+		my closeActiveWorkbookIfAny()
+		tell application "Microsoft Excel"
+			try
+				set wrongWb to open workbook workbook file name workbookPath password "__wrong_password__"
+				close wrongWb saving no
+				error "wrong password unexpectedly opened"
+			on error
+				my appendLog(sessionLog, "[" & fileName & "] wrong-password-rejected=PASS")
+			end try
+		end tell
+	end if
+end repeat
+~~~
+
+# checklist追記ルール
+- 既存記述は削除しない。
+- 追加セクション見出し:
+  `## macOS Manual Verification (Excel) - <YYYY-MM-DD>`
+- 追記内容:
+  - 実施日時（JST）
+  - 実行環境（macOS バージョン / マシン情報）
+  - Excel バージョン
+  - 結果テーブル（file / password-type / correct-password-open / wrong-password-rejected / japanese-sheet-name-retained / reopen-after-save / no-corruption / evidence-path）
+  - 総合判定（PASS/FAIL）
+  - 備考（失敗理由があれば簡潔に）
+- evidence-path は docs/manual-evidence/macos/ 以下の相対パスで記載する。
+- Markdown は既存の文体・表記に合わせる。
+
+# 合否条件
+- 以下をすべて満たす場合のみ PASS:
+  - 正しいパスワードで開ける
+  - 間違ったパスワードで開けない確認が password-type ごとに成功している
+  - 日本語パスワードで開ける
+  - 日本語シート名が保存後再オープンでも崩れない
+  - 再保存後に再オープンできる
+  - 再保存後ファイルが破損しない
+- 1件でも開封不可、再保存不可、再オープン不可、日本語シート名破損、破損警告があれば FAIL。
+- 失敗があっても途中で停止せず、全ケースを実施する。
+
+# 重要ルール
+- 元の test-manual-files は直接変更しない。
+- 作業コピーのみ保存・変更する。
+- 証跡ファイル名は固定ルールに従う。
+- 作業後の git commit は不要。
+- 最後に、実施コマンド一覧・生成/更新ファイル一覧・PASS/FAIL 集計を出力する。
+```
+
+### Linux - Calc
+
+```text
+あなたはこのリポジトリのリリース前手動検証アシスタントです。
+目的は、Linux (Docker Compose + VNC) 上の LibreOffice Calc で暗号化 xlsx/xlsm の互換性を手動確認し、
+docs/manual-test-checklist.md の「LibreOffice Calc」相当項目を満たす証跡を保存することです。
+作業後の git commit は不要です。
+
+# 前提
+- リポジトリルート: /setPassToExcelDotNet
+- コンテナ内リポジトリルート: /workspace
+- 作業コピー用ディレクトリ: docs/manual-evidence/linux/workbooks/
+- 証跡保存先: docs/manual-evidence/linux/
+- 対象ファイル:
+  - test-manual-files/simple_en.xlsx
+  - test-manual-files/simple_ja.xlsx
+  - test-manual-files/japanese_en.xlsx
+  - test-manual-files/japanese_ja.xlsx
+  - test-manual-files/excel_en.xlsm
+  - test-manual-files/excel_ja.xlsm
+  - test-manual-files/excel_image_en.xlsx
+  - test-manual-files/excel_image_ja.xlsx
+- パスワード:
+  - *_en.* は "pass"
+  - *_ja.* は "パスワード"
+- 元ファイルは直接変更しない。必ず作業コピーを作って検証する。
+
+# 実行タスク
+1. docker compose で Linux GUI/VNC 環境を起動する。(using /docker-compose.yml)
+2. VNC/noVNC 接続可能状態を確認する。(see /.env)
+3. LibreOffice バージョン、docker compose サービス名、コンテナ情報を取得する。
+4. 各対象ファイルを docs/manual-evidence/linux/workbooks/ にコピーする。
+5. 各コピーを LibreOffice Calc で開き、正しいパスワードで復号後にシート表示まで確認する。
+6. 各コピーで日本語名のシート `日本語シート` を追加する。
+   - 既に同名シートがある場合は `日本語シート2` など衝突しない名前にする。
+   - 追加したシートの A1 に `日本語シート名保持確認` を入力する。
+7. ファイルを保存して閉じる。
+8. 保存後のファイルをもう一度 LibreOffice Calc で開き、正しいパスワードで復号できることを確認する。
+9. 再オープン後に以下を確認する:
+   - シート内容が表示される
+   - 追加した日本語シート名が崩れていない
+   - 追加シートの A1 が `日本語シート名保持確認` のまま
+   - ファイル破損警告、修復ダイアログ、内容削除/修復の確認ダイアログが出ない
+10. 間違ったパスワードでも開けないことを password-type ごとに最低 1 件ずつ確認する。
+   - en: `simple_en.xlsx` の作業コピーに対して誤パスワード
+   - ja: `simple_ja.xlsx` の作業コピーに対して誤パスワード
+11. 各ケースで以下を保存する:
+   - 初回オープン証跡: docs/manual-evidence/linux/<file-base>-open.png
+   - 日本語シート追加後の証跡: docs/manual-evidence/linux/<file-base>-ja-sheet-added.png
+   - 保存後再オープン証跡: docs/manual-evidence/linux/<file-base>-reopen.png
+   - 実行ログ: docs/manual-evidence/linux/session.log に追記
+12. 実行結果を docs/manual-evidence/linux/summary.md に作成または更新する。
+13. docs/manual-test-checklist.md に今回の Linux 手動検証結果を自動追記する（既存形式に合わせること）。
+
+# Linux / LibreOffice 自動操作の推奨手順
+- 可能なら LibreOffice GUI 操作はコンテナ内の X11 ツールで補助してよい。
+- GUI 操作用に `xdotool`、スクリーンショット用に ImageMagick `import`、日本語パスワード貼り付け用に `xclip` が必要になることがある。
+  - これらがコンテナにない場合のみ、使い捨て検証コンテナ内にインストールしてよい。
+  - インストールした場合は実施コマンド一覧と `session.log` に記録する。
+- LibreOffice はケースごとに一時プロファイルを分ける:
+  - 例: `libreoffice -env:UserInstallation=file:///tmp/lo-profile-<case> --norestore --calc <file>`
+  - これにより Document Recovery や前ケースの状態混入を避ける。
+- 元の `test-manual-files` ではなく `docs/manual-evidence/linux/workbooks/` の作業コピーを開く。
+  - LibreOffice の `.~lock.*#` が出ても元ファイル側に残さない。
+- 日本語パスワードは `xdotool type` で壊れる場合があるため、`xclip` でクリップボードへ入れて貼り付ける。
+- `Document in Use` が出た場合は、作業コピーであることを確認した上で `Open` を選択して継続し、ログに記録する。
+- `Tip of the Day` など表示確認を邪魔するダイアログは閉じてからスクリーンショットを保存する。
+- ファイル破損警告、修復ダイアログ、内容削除/修復の確認ダイアログが出た場合は、安易に修復して PASS 扱いにしない。スクリーンショットを保存し、そのケースの `no-corruption` を FAIL としてログに記録してから可能な範囲で次ケースへ進む。
+- `.xlsm` はマクロ互換の補助確認として、マクロ警告バー/ダイアログの有無もログへ記録する。ただし本プロンプトの必須判定は「開ける、保存できる、再オープンできる、破損しない、日本語シート名が保持される」とする。
+
+# checklist追記ルール（厳守）
+- 既存記述は削除しない。末尾に新規セクションを追加する。
+- 追加セクション見出し: `## Linux Manual Verification (Docker/VNC) - <YYYY-MM-DD>`
+- 追記内容:
+  - 実施日時（JST）
+  - 実行環境（docker compose サービス名 / コンテナ情報）
+  - LibreOffice バージョン
+  - 結果テーブル（file / password-type / correct-password-open / wrong-password-rejected / japanese-sheet-name-retained / reopen-after-save / no-corruption / evidence-path）
+  - 総合判定（PASS/FAIL）
+  - 備考（失敗理由があれば簡潔に）
+- evidence-path は docs/manual-evidence/linux/ 以下の相対パスで記載する。
+- Markdownは既存の文体・表記に合わせる。
+
+# 合否条件
+- 以下をすべて満たす場合のみ PASS:
+  - 正しいパスワードで開ける
+  - 間違ったパスワードで開けない確認が password-type ごとに成功している
+  - 日本語パスワードで開ける
+  - 日本語シート名が保存後再オープンでも崩れない
+  - 再保存後に再オープンできる
+  - 再保存後ファイルが破損しない
+- 1件でも開封不可、再保存不可、再オープン不可、日本語シート名破損、破損警告があれば FAIL。
+- 失敗があっても途中で停止せず、全ケースを実施する。
+
+# 重要ルール
+- 元の test-manual-files は直接変更しない。
+- 作業コピーのみ保存・変更する。
+- 失敗があっても途中で停止せず、全ケース実施する。
+- 証跡ファイル名は固定ルールに従う。
+- 作業後の git commit は不要。
+- 最後に、実施コマンド一覧・生成/更新ファイル一覧・PASS/FAIL 集計を出力する。
+```
