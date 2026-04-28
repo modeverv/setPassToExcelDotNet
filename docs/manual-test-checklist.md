@@ -85,7 +85,9 @@ docker compose up -d
 open http://localhost:6901/
 ```
 
-## macOS Manual Verification (Excel) - 2026-04-28
+## v2.0.5.1 Manual Verification - 2026-04-28
+
+### macOS Manual Verification (Excel) - 2026-04-28
 
 - 実施日時（JST）: 2026-04-28 12:25:37 - 12:30:33
 - 実行環境: macOS 26.3.1 (a) / Build 25D771280a / MacBook Pro (MacBookPro18,3), Apple M1 Pro, 10-core CPU, 16 GB RAM
@@ -106,7 +108,7 @@ open http://localhost:6901/
 - 備考: 誤パスワード拒否は password-type ごとの代表ケースとして `simple_en.xlsx` と `simple_ja.xlsx` で確認した。`.xlsm` の初回オープンと保存後再オープンでは、Excel のマクロ確認ダイアログで `マクロを有効にする` を押下した。ファイル破損警告、修復ダイアログ、保存不可、再オープン不可は発生しなかった。
 
 
-## Linux Manual Verification (Docker/VNC) - 2026-04-28
+### Linux Manual Verification (Docker/VNC) - 2026-04-28
 
 - 実施日時（JST）: 2026-04-28 17:34:52
 - 実行環境: docker compose service `lo-vnc` / 07f9ea3ecc72a61f30dfd36dba2d148eb25eaefc6f6a18f79d32e859b7e6955b / image=setpasstoexceldotnet-lo-vnc / status=running / started=2026-04-28T01:51:17.089880716Z / ip=172.23.0.2
@@ -126,7 +128,7 @@ open http://localhost:6901/
 - 総合判定: PASS
 - 備考: docker compose service: lo-vnc (ports 5901/tcp, 6901/tcp)。誤パスワード拒否は password-type ごとの代表ケースとして `simple_en.xlsx` と `simple_ja.xlsx` で確認した。ファイル破損警告、修復ダイアログ、内容削除/修復の確認ダイアログは検出されなかった。`.xlsm` では macro disabled バーが表示されたが、open/save/reopen はブロックされなかった。
 
-## Windows Manual Verification (Excel) - 2026-04-28
+### Windows Manual Verification (Excel) - 2026-04-28
 
 - Executed (JST): 2026-04-28 18:17:05 - 2026-04-28 18:18:38
 - Environment: Microsoft Windows 11 Pro Insider Preview / Version 10.0.26300 / Build 26300 / LENOVO 20V9
