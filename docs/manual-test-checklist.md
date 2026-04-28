@@ -124,3 +124,23 @@ open http://localhost:6901/
 
 - 総合判定: PASS
 - 備考: docker compose service: lo-vnc (ports 5901/tcp, 6901/tcp)。誤パスワード拒否は password-type ごとの代表ケースとして `simple_en.xlsx` と `simple_ja.xlsx` で確認した。ファイル破損警告、修復ダイアログ、内容削除/修復の確認ダイアログは検出されなかった。`.xlsm` では macro disabled バーが表示されたが、open/save/reopen はブロックされなかった。
+
+## Windows Manual Verification (Excel) - 2026-04-28
+
+- Executed (JST): 2026-04-28 18:17:05 - 2026-04-28 18:18:38
+- Environment: Microsoft Windows 11 Pro Insider Preview / Version 10.0.26300 / Build 26300 / LENOVO 20V9
+- Excel version: Microsoft Excel for Windows 16.0.19127.20302
+
+| file | password-type | correct-password-open | wrong-password-rejected | japanese-sheet-name-retained | reopen-after-save | no-corruption | evidence-path |
+|---|---|---:|---:|---:|---:|---:|---|
+| simple_en.xlsx | en | PASS | PASS | PASS | PASS | PASS | simple_en-open.png<br/>simple_en-ja-sheet-added.png<br/>simple_en-reopen.png |
+| simple_ja.xlsx | ja | PASS | PASS | PASS | PASS | PASS | simple_ja-open.png<br/>simple_ja-ja-sheet-added.png<br/>simple_ja-reopen.png |
+| japanese_en.xlsx | en | PASS | N/A | PASS | PASS | PASS | japanese_en-open.png<br/>japanese_en-ja-sheet-added.png<br/>japanese_en-reopen.png |
+| japanese_ja.xlsx | ja | PASS | N/A | PASS | PASS | PASS | japanese_ja-open.png<br/>japanese_ja-ja-sheet-added.png<br/>japanese_ja-reopen.png |
+| excel_en.xlsm | en | PASS | N/A | PASS | PASS | PASS | excel_en-open.png<br/>excel_en-ja-sheet-added.png<br/>excel_en-reopen.png |
+| excel_ja.xlsm | ja | PASS | N/A | PASS | PASS | PASS | excel_ja-open.png<br/>excel_ja-ja-sheet-added.png<br/>excel_ja-reopen.png |
+| excel_image_en.xlsx | en | PASS | N/A | PASS | PASS | PASS | excel_image_en-open.png<br/>excel_image_en-ja-sheet-added.png<br/>excel_image_en-reopen.png |
+| excel_image_ja.xlsx | ja | PASS | N/A | PASS | PASS | PASS | excel_image_ja-open.png<br/>excel_image_ja-ja-sheet-added.png<br/>excel_image_ja-reopen.png |
+
+- Overall result: PASS
+- Notes: Wrong password rejection was verified with `simple_en.xlsx` and `simple_ja.xlsx`; no corruption/repair dialogs were observed. `.xlsm` macro prompts did not block open/save/reopen in this Excel COM run.

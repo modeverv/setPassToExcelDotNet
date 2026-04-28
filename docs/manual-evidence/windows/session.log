@@ -1,0 +1,150 @@
+﻿[2026-04-28 18:14:14 +09:00] Windows Excel manual verification started.
+[2026-04-28 18:14:14 +09:00] Repo root: C:\Users\modev\Downloads\setPassToExcelDotNet
+[2026-04-28 18:14:20 +09:00] Copied simple_en.xlsx to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied simple_ja.xlsx to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied japanese_en.xlsx to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied japanese_ja.xlsx to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied excel_en.xlsm to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied excel_ja.xlsm to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied excel_image_en.xlsx to workbooks.
+[2026-04-28 18:14:20 +09:00] Copied excel_image_ja.xlsx to workbooks.
+[2026-04-28 18:14:25 +09:00] Excel COM version: 16.0; file version: 16.0.19127.20302
+[2026-04-28 18:14:25 +09:00] AutomationSecurity set to low for this Excel automation run; xlsm macro prompts did not block compatibility verification.
+[2026-04-28 18:14:25 +09:00] CASE START simple_en.xlsx
+[2026-04-28 18:14:26 +09:00] Wrong password rejected for simple_en.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:26 +09:00] ERROR case simple_en.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:26 +09:00] CASE END simple_en.xlsx: correctOpen=FAIL; wrongRejected=PASS; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:26 +09:00] CASE START simple_ja.xlsx
+[2026-04-28 18:14:27 +09:00] Wrong password rejected for simple_ja.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] ERROR case simple_ja.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE END simple_ja.xlsx: correctOpen=FAIL; wrongRejected=PASS; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE START japanese_en.xlsx
+[2026-04-28 18:14:27 +09:00] ERROR case japanese_en.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE END japanese_en.xlsx: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE START japanese_ja.xlsx
+[2026-04-28 18:14:27 +09:00] ERROR case japanese_ja.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE END japanese_ja.xlsx: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:27 +09:00] CASE START excel_en.xlsm
+[2026-04-28 18:14:28 +09:00] ERROR case excel_en.xlsm: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:28 +09:00] CASE END excel_en.xlsm: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:28 +09:00] CASE START excel_ja.xlsm
+[2026-04-28 18:14:28 +09:00] ERROR case excel_ja.xlsm: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:28 +09:00] CASE END excel_ja.xlsm: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:28 +09:00] CASE START excel_image_en.xlsx
+[2026-04-28 18:14:29 +09:00] ERROR case excel_image_en.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:29 +09:00] CASE END excel_image_en.xlsx: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:29 +09:00] CASE START excel_image_ja.xlsx
+[2026-04-28 18:14:29 +09:00] ERROR case excel_image_ja.xlsx: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:14:29 +09:00] CASE END excel_image_ja.xlsx: correctOpen=FAIL; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=FAIL; notes=Open/save flow failed: Workbooks クラスの Open プロパティを取得できません。
+[2026-04-28 18:15:15 +09:00] Windows Excel manual verification started.
+[2026-04-28 18:15:15 +09:00] Repo root: C:\Users\modev\Downloads\setPassToExcelDotNet
+[2026-04-28 18:15:21 +09:00] Copied simple_en.xlsx to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied simple_ja.xlsx to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied japanese_en.xlsx to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied japanese_ja.xlsx to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied excel_en.xlsm to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied excel_ja.xlsm to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied excel_image_en.xlsx to workbooks.
+[2026-04-28 18:15:21 +09:00] Copied excel_image_ja.xlsx to workbooks.
+[2026-04-28 18:15:24 +09:00] Excel COM version: 16.0; file version: 16.0.19127.20302
+[2026-04-28 18:15:25 +09:00] AutomationSecurity set to low for this Excel automation run; xlsm macro prompts did not block compatibility verification.
+[2026-04-28 18:15:25 +09:00] CASE START simple_en.xlsx
+[2026-04-28 18:15:25 +09:00] Wrong password rejected for simple_en.xlsx: 入力したパスワードが間違っています。CapsLock キーの状態に注意して、大文字と小文字が正しく使われていることを確認してください。
+[2026-04-28 18:15:29 +09:00] Opened with correct password and captured evidence for simple_en.xlsx.
+[2026-04-28 18:15:29 +09:00] ERROR case simple_en.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:29 +09:00] CASE END simple_en.xlsx: correctOpen=PASS; wrongRejected=PASS; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:29 +09:00] CASE START simple_ja.xlsx
+[2026-04-28 18:15:30 +09:00] Wrong password rejected for simple_ja.xlsx: 入力したパスワードが間違っています。CapsLock キーの状態に注意して、大文字と小文字が正しく使われていることを確認してください。
+[2026-04-28 18:15:32 +09:00] Opened with correct password and captured evidence for simple_ja.xlsx.
+[2026-04-28 18:15:32 +09:00] ERROR case simple_ja.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:32 +09:00] CASE END simple_ja.xlsx: correctOpen=PASS; wrongRejected=PASS; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:32 +09:00] CASE START japanese_en.xlsx
+[2026-04-28 18:15:35 +09:00] Opened with correct password and captured evidence for japanese_en.xlsx.
+[2026-04-28 18:15:35 +09:00] ERROR case japanese_en.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:35 +09:00] CASE END japanese_en.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:35 +09:00] CASE START japanese_ja.xlsx
+[2026-04-28 18:15:38 +09:00] Opened with correct password and captured evidence for japanese_ja.xlsx.
+[2026-04-28 18:15:38 +09:00] ERROR case japanese_ja.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:38 +09:00] CASE END japanese_ja.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:38 +09:00] CASE START excel_en.xlsm
+[2026-04-28 18:15:43 +09:00] Opened with correct password and captured evidence for excel_en.xlsm.
+[2026-04-28 18:15:43 +09:00] ERROR case excel_en.xlsm: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:43 +09:00] CASE END excel_en.xlsm: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:43 +09:00] CASE START excel_ja.xlsm
+[2026-04-28 18:15:46 +09:00] Opened with correct password and captured evidence for excel_ja.xlsm.
+[2026-04-28 18:15:46 +09:00] ERROR case excel_ja.xlsm: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:46 +09:00] CASE END excel_ja.xlsm: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:46 +09:00] CASE START excel_image_en.xlsx
+[2026-04-28 18:15:49 +09:00] Opened with correct password and captured evidence for excel_image_en.xlsx.
+[2026-04-28 18:15:49 +09:00] ERROR case excel_image_en.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:49 +09:00] CASE END excel_image_en.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:49 +09:00] CASE START excel_image_ja.xlsx
+[2026-04-28 18:15:52 +09:00] Opened with correct password and captured evidence for excel_image_ja.xlsx.
+[2026-04-28 18:15:52 +09:00] ERROR case excel_image_ja.xlsx: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:52 +09:00] CASE END excel_image_ja.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=FAIL; reopen=FAIL; noCorruption=PASS; notes=Open/save flow failed: Sheets クラスの Add プロパティを取得できません。
+[2026-04-28 18:15:53 +09:00] Appended checklist section: C:\Users\modev\Downloads\setPassToExcelDotNet\docs\manual-test-checklist.md
+[2026-04-28 18:15:53 +09:00] Windows Excel manual verification completed: FAIL
+[2026-04-28 18:17:05 +09:00] Windows Excel manual verification started.
+[2026-04-28 18:17:05 +09:00] Repo root: C:\Users\modev\Downloads\setPassToExcelDotNet
+[2026-04-28 18:17:11 +09:00] Copied simple_en.xlsx to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied simple_ja.xlsx to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied japanese_en.xlsx to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied japanese_ja.xlsx to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied excel_en.xlsm to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied excel_ja.xlsm to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied excel_image_en.xlsx to workbooks.
+[2026-04-28 18:17:11 +09:00] Copied excel_image_ja.xlsx to workbooks.
+[2026-04-28 18:17:15 +09:00] Excel COM version: 16.0; file version: 16.0.19127.20302
+[2026-04-28 18:17:15 +09:00] AutomationSecurity set to low for this Excel automation run; xlsm macro prompts did not block compatibility verification.
+[2026-04-28 18:17:15 +09:00] CASE START simple_en.xlsx
+[2026-04-28 18:17:15 +09:00] Wrong password rejected for simple_en.xlsx: 入力したパスワードが間違っています。CapsLock キーの状態に注意して、大文字と小文字が正しく使われていることを確認してください。
+[2026-04-28 18:17:19 +09:00] Opened with correct password and captured evidence for simple_en.xlsx.
+[2026-04-28 18:17:22 +09:00] Added sheet '日本語シート' and captured evidence for simple_en.xlsx.
+[2026-04-28 18:17:24 +09:00] Saved and closed simple_en.xlsx.
+[2026-04-28 18:17:27 +09:00] Reopened and verified simple_en.xlsx; sheetRetained=PASS.
+[2026-04-28 18:17:27 +09:00] CASE END simple_en.xlsx: correctOpen=PASS; wrongRejected=PASS; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:17:27 +09:00] CASE START simple_ja.xlsx
+[2026-04-28 18:17:27 +09:00] Wrong password rejected for simple_ja.xlsx: 入力したパスワードが間違っています。CapsLock キーの状態に注意して、大文字と小文字が正しく使われていることを確認してください。
+[2026-04-28 18:17:30 +09:00] Opened with correct password and captured evidence for simple_ja.xlsx.
+[2026-04-28 18:17:32 +09:00] Added sheet '日本語シート' and captured evidence for simple_ja.xlsx.
+[2026-04-28 18:17:33 +09:00] Saved and closed simple_ja.xlsx.
+[2026-04-28 18:17:36 +09:00] Reopened and verified simple_ja.xlsx; sheetRetained=PASS.
+[2026-04-28 18:17:36 +09:00] CASE END simple_ja.xlsx: correctOpen=PASS; wrongRejected=PASS; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:17:36 +09:00] CASE START japanese_en.xlsx
+[2026-04-28 18:17:39 +09:00] Opened with correct password and captured evidence for japanese_en.xlsx.
+[2026-04-28 18:17:41 +09:00] Added sheet '日本語シート' and captured evidence for japanese_en.xlsx.
+[2026-04-28 18:17:42 +09:00] Saved and closed japanese_en.xlsx.
+[2026-04-28 18:17:46 +09:00] Reopened and verified japanese_en.xlsx; sheetRetained=PASS.
+[2026-04-28 18:17:46 +09:00] CASE END japanese_en.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:17:46 +09:00] CASE START japanese_ja.xlsx
+[2026-04-28 18:17:48 +09:00] Opened with correct password and captured evidence for japanese_ja.xlsx.
+[2026-04-28 18:17:51 +09:00] Added sheet '日本語シート' and captured evidence for japanese_ja.xlsx.
+[2026-04-28 18:17:52 +09:00] Saved and closed japanese_ja.xlsx.
+[2026-04-28 18:17:55 +09:00] Reopened and verified japanese_ja.xlsx; sheetRetained=PASS.
+[2026-04-28 18:17:55 +09:00] CASE END japanese_ja.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:17:55 +09:00] CASE START excel_en.xlsm
+[2026-04-28 18:17:58 +09:00] Opened with correct password and captured evidence for excel_en.xlsm.
+[2026-04-28 18:18:01 +09:00] Added sheet '日本語シート' and captured evidence for excel_en.xlsm.
+[2026-04-28 18:18:02 +09:00] Saved and closed excel_en.xlsm.
+[2026-04-28 18:18:06 +09:00] Reopened and verified excel_en.xlsm; sheetRetained=PASS.
+[2026-04-28 18:18:06 +09:00] CASE END excel_en.xlsm: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:18:06 +09:00] CASE START excel_ja.xlsm
+[2026-04-28 18:18:09 +09:00] Opened with correct password and captured evidence for excel_ja.xlsm.
+[2026-04-28 18:18:11 +09:00] Added sheet '日本語シート' and captured evidence for excel_ja.xlsm.
+[2026-04-28 18:18:13 +09:00] Saved and closed excel_ja.xlsm.
+[2026-04-28 18:18:16 +09:00] Reopened and verified excel_ja.xlsm; sheetRetained=PASS.
+[2026-04-28 18:18:16 +09:00] CASE END excel_ja.xlsm: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:18:16 +09:00] CASE START excel_image_en.xlsx
+[2026-04-28 18:18:19 +09:00] Opened with correct password and captured evidence for excel_image_en.xlsx.
+[2026-04-28 18:18:21 +09:00] Added sheet '日本語シート' and captured evidence for excel_image_en.xlsx.
+[2026-04-28 18:18:23 +09:00] Saved and closed excel_image_en.xlsx.
+[2026-04-28 18:18:26 +09:00] Reopened and verified excel_image_en.xlsx; sheetRetained=PASS.
+[2026-04-28 18:18:26 +09:00] CASE END excel_image_en.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:18:26 +09:00] CASE START excel_image_ja.xlsx
+[2026-04-28 18:18:29 +09:00] Opened with correct password and captured evidence for excel_image_ja.xlsx.
+[2026-04-28 18:18:32 +09:00] Added sheet '日本語シート' and captured evidence for excel_image_ja.xlsx.
+[2026-04-28 18:18:33 +09:00] Saved and closed excel_image_ja.xlsx.
+[2026-04-28 18:18:36 +09:00] Reopened and verified excel_image_ja.xlsx; sheetRetained=PASS.
+[2026-04-28 18:18:36 +09:00] CASE END excel_image_ja.xlsx: correctOpen=PASS; wrongRejected=N/A; sheetRetained=PASS; reopen=PASS; noCorruption=PASS; notes=
+[2026-04-28 18:18:37 +09:00] Appended checklist section: C:\Users\modev\Downloads\setPassToExcelDotNet\docs\manual-test-checklist.md
+[2026-04-28 18:18:38 +09:00] Windows Excel manual verification completed: PASS
