@@ -13,6 +13,7 @@
 | Release Version | Check Date | Checker  | Environment                                                         | Result | Notes |
 |-----------------|------------|----------|---------------------------------------------------------------------|--------|-------|
 | 2.0.5           | 2026-04-25 | modeverv | mac - 16.105.1<br/>win - 16.0.19127.20302<br/>linux - calc 24.2.7.2 | OK     | -     |
+| 2.0.5.1         | 2026-04-28 | codex    | mac - 16.108<br/>win - 16.0.19127.20302<br/>linux - calc 24.2.7.2   | OK     | -     |
 
 Environment は最低でも `OS version - App Version` を記録する。
 
