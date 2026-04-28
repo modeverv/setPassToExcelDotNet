@@ -7,7 +7,7 @@
         <LangVersion>10</LangVersion>
 
         <PackageId>ExcelEncryptor</PackageId>
-        <Version>2.0.5</Version>
+        <Version>2.0.5.1</Version>
         <Authors>seijiro ikehata</Authors>
         <Description>Encrypt XLSX with a password (static utility API).</Description>
         <PackageTags>excel;xlsx;encryption;aes;password</PackageTags>

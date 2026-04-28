@@ -66,56 +66,7 @@ public class InvalidInputTests
             DeleteIfExists(reencryptedPath);
         }
     }
-
-    [Fact]
-    public void EncryptToStream_WithNullInputStream_ThrowsArgumentNullException()
-    {
-        var encryptor = new Encrypt();
-        var output = new MemoryStream();
-
-        try
-        {
-            Assert.Throws<ArgumentNullException>(() => encryptor.EncryptToStream(null!, output, Password));
-        }
-        finally
-        {
-            output.Dispose();
-        }
-    }
-
-    [Fact]
-    public void EncryptToStream_WithEmptyInputStream_ThrowsArgumentException()
-    {
-        var encryptor = new Encrypt();
-        using var input = new MemoryStream();
-        using var output = new MemoryStream();
-
-        var ex = Assert.Throws<ArgumentException>(() => encryptor.EncryptToStream(input, output, Password));
-        Assert.Equal("inputStream", ex.ParamName);
-    }
-
-    [Fact]
-    public void EncryptToStream_WithUnreadableInputStream_ThrowsArgumentException()
-    {
-        var encryptor = new Encrypt();
-        using var input = Stream.Null;
-        using var output = new MemoryStream();
-
-        var ex = Assert.Throws<ArgumentException>(() => encryptor.EncryptToStream(input, output, Password));
-        Assert.Equal("inputStream", ex.ParamName);
-    }
-
-    [Fact]
-    public void EncryptToStream_WithUnwritableOutputStream_ThrowsArgumentException()
-    {
-        var encryptor = new Encrypt();
-        using var input = new MemoryStream(File.ReadAllBytes(GetPlainPath()));
-        using var output = new MemoryStream(new byte[0], writable: false);
-
-        var ex = Assert.Throws<ArgumentException>(() => encryptor.EncryptToStream(input, output, Password));
-        Assert.Equal("outputStream", ex.ParamName);
-    }
-
+    
     [Fact]
     public void DecryptToStream_WithNullInputStream_ThrowsArgumentNullException()
     {

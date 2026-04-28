@@ -34,6 +34,10 @@ public partial class Encrypt
     private readonly int _segmentLength = 4096;
     private readonly int _spinCount = 100000;
     
+    /// <summary>
+    /// Provides functionalities for encrypting and decrypting files and byte arrays
+    /// using AES encryption, with configurable key sizes and hash algorithms.
+    /// </summary>
     public Encrypt(
         AesKeySize keySize = AesKeySize.Aes128,
         HashAlgorithmType hashAlgorithm = HashAlgorithmType.Sha1)
@@ -44,6 +48,50 @@ public partial class Encrypt
         ValidateParameters();
     }
     
+    /// <summary>
+    /// Converts a byte array to an encrypted file using the specified password and saves it to the provided output path.
+    /// </summary>
+    /// <param name="bytes">The byte array representing the data to be encrypted and saved to a file.</param>
+    /// <param name="outputPath">The path where the encrypted file will be saved.</param>
+    /// <param name="passwordString">The password used to encrypt the file.</param>
+    public static void FromBytesToFile(byte[] bytes, string outputPath, string passwordString)
+    {
+        var encryptor = new Encrypt();
+        encryptor.EncryptToFile(bytes, outputPath, passwordString);
+    }
+    
+    /// <summary>
+    /// Encrypts the content of a file specified by the input path and saves the encrypted data to another file at the specified output path using the given password.
+    /// </summary>
+    /// <param name="inputPath">The path of the file to be encrypted.</param>
+    /// <param name="outputPath">The path where the encrypted file will be saved.</param>
+    /// <param name="passwordString">The password used to encrypt the file.</param>
+    public static void FromFileToFile(string inputPath, string outputPath, string passwordString)
+    {
+        var encryptor = new Encrypt();
+        encryptor.EncryptFile(inputPath, outputPath, passwordString);
+    }
+    
+    /// <summary>
+    /// Encrypts the file at the specified input path with the given password and saves the encrypted output to the specified output path.
+    /// </summary>
+    /// <param name="inputPath">The path to the input file that will be encrypted.</param>
+    /// <param name="outputPath">The path where the encrypted file will be saved.</param>
+    /// <param name="password">The password used to encrypt the file.</param>
+    public void EncryptFile(string inputPath, string outputPath, string password)
+    {
+        var packageData = File.ReadAllBytes(inputPath);
+        EncryptToFile(packageData, outputPath, password);
+    }
+    
+    
+    /// <summary>
+    /// Validates the configured encryption parameters, including the key size and hash size,
+    /// ensuring they conform to supported values. Throws an exception if any parameter is invalid.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the key size or hash size does not match one of the accepted values.
+    /// </exception>
     private void ValidateParameters()
     {
         if (_keySize != 128 && _keySize != 192 && _keySize != 256)
@@ -53,6 +101,12 @@ public partial class Encrypt
             throw new InvalidOperationException($"Invalid hash size: {_hashSize}");
     }
     
+    /// <summary>
+    /// Creates and returns an instance of a hash algorithm based on the specified type.
+    /// Supports various algorithms including MD5, SHA-1, SHA-256, SHA-384, and SHA-512.
+    /// </summary>
+    /// <returns>An instance of the selected hash algorithm.</returns>
+    /// <exception cref="NotSupportedException">Thrown when an unsupported hash algorithm type is specified.</exception>
     private HashAlgorithm CreateHashAlgorithm()
     {
         return _hashAlgorithm switch
@@ -66,6 +120,12 @@ public partial class Encrypt
         };
     }
     
+    /// <summary>
+    /// Retrieves the name of the hash algorithm as a string based on the configured
+    /// hash algorithm type.
+    /// </summary>
+    /// <returns>The name of the hash algorithm.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the configured hash algorithm type is unsupported.</exception>
     private string GetHashAlgorithmName()
     {
         return _hashAlgorithm switch
@@ -79,6 +139,13 @@ public partial class Encrypt
         };
     }
     
+    /// <summary>
+    /// Creates an HMAC (Hash-Based Message Authentication Code) instance using the specified cryptographic hash
+    /// algorithm and key, enabling the computation of a message authentication code for data integrity and authenticity validation.
+    /// </summary>
+    /// <param name="key">The secret key used for HMAC generation. The key must be compatible with the selected hash algorithm.</param>
+    /// <returns>An HMAC instance that uses the specified hash algorithm and key.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the specified hash algorithm is not supported.</exception>
     private HMAC CreateHmac(byte[] key)
     {
         return _hashAlgorithm switch
@@ -92,7 +159,15 @@ public partial class Encrypt
         };
     }
     
-    public void EncryptToFile(byte[] wbByte, string outputPath, string password)
+    /// <summary>
+    /// Encrypts a byte array and saves the resulting encrypted data to a specified file path.
+    /// </summary>
+    /// <param name="wbByte">The byte array to be encrypted. Cannot be null or empty.</param>
+    /// <param name="outputPath">The path to the output file where the encrypted data will be saved. The file will be created or overwritten.</param>
+    /// <param name="password">The password used for encryption. Cannot be null, empty, or exceed 255 characters.</param>
+    /// <exception cref="ArgumentException">Thrown if the input data is null, empty, or if the password criteria are not met.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the encryption process fails due to an internal error.</exception>
+    private void EncryptToFile(byte[] wbByte, string outputPath, string password)
     {
         if (wbByte == null || wbByte.Length == 0)
             throw new ArgumentException("Input data cannot be null or empty", nameof(wbByte));
@@ -117,53 +192,20 @@ public partial class Encrypt
             throw new InvalidOperationException("Failed to encrypt file", ex);
         }
     }
-
-    public void EncryptToStream(Stream inputStream, Stream outputStream, string password)
-    {
-        if (inputStream == null)
-            throw new ArgumentNullException(nameof(inputStream));
-
-        if (outputStream == null)
-            throw new ArgumentNullException(nameof(outputStream));
-
-        if (!inputStream.CanRead)
-            throw new ArgumentException("Input stream must be readable", nameof(inputStream));
-
-        if (!outputStream.CanWrite)
-            throw new ArgumentException("Output stream must be writable", nameof(outputStream));
-
-        using var buffer = new MemoryStream();
-        inputStream.CopyTo(buffer);
-        var bytes = buffer.ToArray();
-
-        if (bytes.Length == 0)
-            throw new ArgumentException("Input stream cannot be empty", nameof(inputStream));
-
-        var tempOutputPath = Path.Combine(Path.GetTempPath(), $"excelencryptor-stream-encrypted-{Guid.NewGuid():N}.bin");
-
-        try
-        {
-            EncryptToFile(bytes, tempOutputPath, password);
-
-            using var tempOutput = File.OpenRead(tempOutputPath);
-            tempOutput.CopyTo(outputStream);
-
-            if (outputStream.CanSeek)
-                outputStream.Position = 0;
-        }
-        finally
-        {
-            if (File.Exists(tempOutputPath))
-                File.Delete(tempOutputPath);
-        }
-    }
     
-    public void EncryptFile(string inputPath, string outputPath, string password)
-    {
-        var packageData = File.ReadAllBytes(inputPath);
-        EncryptToFile(packageData, outputPath, password);
-    }
-    
+    /// <summary>
+    /// Generates encryption information, including an XML document, an encryption key, key salt,
+    /// and integrity salt, based on the provided password. This information is used to securely encrypt
+    /// and validate data.
+    /// </summary>
+    /// <param name="password">The password used to derive cryptographic keys and hashes.</param>
+    /// <returns>
+    /// A tuple containing:
+    /// 1. An <c>XDocument</c> representing the encryption structure for storing key-related metadata.
+    /// 2. A byte array representing the derived encryption key.
+    /// 3. A byte array representing the salt used for key derivation.
+    /// 4. A byte array representing the salt used for data integrity validation.
+    /// </returns>
     private (XDocument, byte[], byte[], byte[]) GenerateEncryptionInfo(string password)
     {
         var keySalt = RandomBytes(_saltSize);
@@ -247,8 +289,13 @@ public partial class Encrypt
     }
     
     /// <summary>
-    ///     EncryptPackage
+    /// Encrypts the provided byte array data using AES encryption with the specified key and key salt.
+    /// The encryption is performed in multiple segments, ensuring data is securely processed in blocks.
     /// </summary>
+    /// <param name="data">The byte array containing the data to encrypt.</param>
+    /// <param name="key">The encryption key used to encrypt the data.</param>
+    /// <param name="keySalt">The salt used to derive the initialization vector for block encryption.</param>
+    /// <returns>A byte array containing the encrypted data.</returns>
     private byte[] EncryptPackage(byte[] data, byte[] key, byte[] keySalt)
     {
         using var ms = new MemoryStream();
@@ -288,6 +335,16 @@ public partial class Encrypt
         return ms.ToArray();
     }
     
+    /// <summary>
+    /// Updates the integrity HMAC in the encrypted package and modifies the XML document
+    /// to include the encrypted HMAC value for data integrity checking.
+    /// </summary>
+    /// <param name="encryptedPackage">The byte array representing the encrypted package.</param>
+    /// <param name="oleStreamSize">The size of the OLE stream in the original data.</param>
+    /// <param name="encryptionKey">The encryption key used for encrypting the package.</param>
+    /// <param name="keySalt">The salt used for key derivation.</param>
+    /// <param name="integritySalt">The salt used for HMAC generation.</param>
+    /// <param name="xmlDoc">The XML document to which the encrypted HMAC value will be added.</param>
     private void UpdateIntegrityHmac(byte[] encryptedPackage, int oleStreamSize, byte[] encryptionKey,
         byte[] keySalt, byte[] integritySalt, XDocument xmlDoc)
     {
@@ -314,6 +371,13 @@ public partial class Encrypt
         
     }
     
+    /// <summary>
+    /// Creates an encrypted file with the specified output path, encryption information,
+    /// and encrypted package data.
+    /// </summary>
+    /// <param name="outputPath">The file path where the encrypted file will be created.</param>
+    /// <param name="xmlDoc">The XML document containing the encryption metadata.</param>
+    /// <param name="encryptedPackage">The byte array containing the encrypted package data.</param>
     private static void CreateEncryptedFile(string outputPath, XDocument xmlDoc, byte[] encryptedPackage)
     {
         using var root = RootStorage.Create(outputPath);
@@ -335,7 +399,16 @@ public partial class Encrypt
             encPackageStream.Write(encryptedPackage, 0, encryptedPackage.Length);
         }
     }
-
+    
+    /// <summary>
+    /// Validates if the provided byte array represents a valid Open Office XML (OOXML)
+    /// workbook package by checking for the existence of required entries within the archive.
+    /// </summary>
+    /// <param name="wbByte">The byte array of the workbook to validate.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the byte array does not contain a valid OOXML workbook structure
+    /// or when the data is not a valid zip archive.
+    /// </exception>
     private static void ValidateWorkbookPackage(byte[] wbByte)
     {
         try
@@ -352,6 +425,11 @@ public partial class Encrypt
         }
     }
     
+    /// <summary>
+    /// Generates a random byte array of the specified length using a cryptographic random number generator.
+    /// </summary>
+    /// <param name="length">The length of the byte array to generate.</param>
+    /// <returns>A byte array containing cryptographically secure random values.</returns>
     private static byte[] RandomBytes(int length)
     {
         var bytes = new byte[length];
@@ -360,6 +438,12 @@ public partial class Encrypt
         return bytes;
     }
     
+    /// <summary>
+    /// Pads the input byte array to the nearest multiple of the block size (16 bytes)
+    /// by appending zeroes to the end of the array.
+    /// </summary>
+    /// <param name="data">The input byte array to be padded.</param>
+    /// <returns>A new byte array padded to the nearest multiple of 16 bytes, with the original data preserved at the beginning of the array.</returns>
     private static byte[] PadBlock(byte[] data)
     {
         var padded = (data.Length + 15) / 16 * 16;
@@ -368,6 +452,14 @@ public partial class Encrypt
         return result;
     }
     
+    /// <summary>
+    /// Generates a hashed representation of a password combined with a salt, using
+    /// a specified number of iterations for added computational complexity.
+    /// </summary>
+    /// <param name="pw">The password to hash, provided as a string.</param>
+    /// <param name="salt">A byte array representing the salt to be incorporated into the hash.</param>
+    /// <param name="spin">The number of iterations to perform for the hash computation.</param>
+    /// <returns>A byte array containing the resulting hash.</returns>
     private byte[] HashPassword(string pw, byte[] salt, int spin)
     {
         var pwb = Encoding.Unicode.GetBytes(pw);
@@ -396,6 +488,16 @@ public partial class Encrypt
         }
     }
     
+    /// <summary>
+    /// Generates a hashed input by combining the provided password hash, salt, block information,
+    /// and input data, utilizing AES encryption with a specified key size.
+    /// </summary>
+    /// <param name="pwHash">The password hash used to derive the encryption key.</param>
+    /// <param name="salt">The salt value used to derive the initialization vector (IV).</param>
+    /// <param name="blk">The block information used for key derivation.</param>
+    /// <param name="input">The input data to be hashed and encrypted.</param>
+    /// <param name="keySize">The size of the encryption key in bits.</param>
+    /// <returns>A byte array representing the hashed and encrypted result of the input data.</returns>
     private byte[] HashInput(byte[] pwHash, byte[] salt, byte[] blk, byte[] input, int keySize)
     {
         var k = GenerateKey(pwHash, blk, keySize);
@@ -404,6 +506,14 @@ public partial class Encrypt
         return EncryptWithAes(pad, k, iv, false);
     }
     
+    /// <summary>
+    /// Generates an encryption key by hashing the provided inputs using the configured hash algorithm.
+    /// Combines the primary hash (h) and additional block data (blk) to produce a key of the specified size (ks).
+    /// </summary>
+    /// <param name="h">The primary hash input for generating the key.</param>
+    /// <param name="blk">Additional block data to be incorporated into the key derivation process.</param>
+    /// <param name="ks">The desired size of the key in bytes.</param>
+    /// <returns>A byte array representing the generated encryption key.</returns>
     private byte[] GenerateKey(byte[] h, byte[] blk, int ks)
     {
         using var hashAlg = CreateHashAlgorithm();
@@ -415,6 +525,14 @@ public partial class Encrypt
         return k;
     }
     
+    /// <summary>
+    /// Generates an initialization vector (IV) based on the provided salt, optional block, and block size.
+    /// The method uses a cryptographic hash algorithm if a block is provided or directly derives the IV from the salt if the block is null.
+    /// </summary>
+    /// <param name="salt">The salt used as a base for generating the initialization vector.</param>
+    /// <param name="blk">An optional byte array used to further derive the initialization vector. Can be null.</param>
+    /// <param name="bs">The size of the initialization vector to output.</param>
+    /// <returns>A byte array representing the generated initialization vector.</returns>
     private byte[] GenerateIv(byte[] salt, byte[]? blk, int bs)
     {
         if (blk == null)
@@ -433,6 +551,14 @@ public partial class Encrypt
         return iv;
     }
     
+    /// <summary>
+    /// Generates an initialization vector (IV) for AES encryption based on the provided salt,
+    /// block key, and block size using the configured hash algorithm.
+    /// </summary>
+    /// <param name="salt">A byte array used as the salt value to influence the hashing process and ensure uniqueness.</param>
+    /// <param name="blockKey">A 32-bit unsigned integer representing the block key, used to differentiate IVs for each block.</param>
+    /// <param name="bs">The size of the block in bytes for which the IV is generated.</param>
+    /// <returns>A byte array representing the generated initialization vector (IV) of the specified block size.</returns>
     private byte[] GenerateBlockIv(byte[] salt, uint blockKey, int bs)
     {
         var blockBytes = BitConverter.GetBytes(blockKey);
@@ -445,14 +571,15 @@ public partial class Encrypt
         return iv;
     }
     
+    
     /// <summary>
-    ///     AES encrypt
+    /// Encrypts data using AES encryption with the specified key, initialization vector, and padding mode.
     /// </summary>
-    /// <param name="d">data</param>
-    /// <param name="k">key</param>
-    /// <param name="iv">iv</param>
-    /// <param name="isLast">is the last block?</param>
-    /// <returns>encrypted data</returns>
+    /// <param name="d">The byte array of data to be encrypted.</param>
+    /// <param name="k">The encryption key to use during the encryption process.</param>
+    /// <param name="iv">The initialization vector (IV) to use during the encryption process.</param>
+    /// <param name="isLast">Specifies whether padding should be applied. If true, PKCS7 padding is used; otherwise, no padding is applied.</param>
+    /// <returns>Returns the encrypted byte array.</returns>
     private static byte[] EncryptWithAes(byte[] d, byte[] k, byte[] iv, bool isLast)
     {
         using var aes = Aes.Create();
@@ -461,17 +588,5 @@ public partial class Encrypt
         aes.Mode = CipherMode.CBC;
         aes.Padding = isLast ? PaddingMode.PKCS7 : PaddingMode.None;
         return aes.CreateEncryptor().TransformFinalBlock(d, 0, d.Length);
-    }
-    
-    public static void FromBytesToFile(byte[] bytes, string outputPath, string passwordString)
-    {
-        var encryptor = new Encrypt();
-        encryptor.EncryptToFile(bytes, outputPath, passwordString);
-    }
-    
-    public static void FromFileToFile(string inputPath, string outputPath, string passwordString)
-    {
-        var encryptor = new Encrypt();
-        encryptor.EncryptFile(inputPath, outputPath, passwordString);
     }
 }

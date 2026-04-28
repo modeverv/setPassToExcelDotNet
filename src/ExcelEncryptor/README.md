@@ -178,6 +178,11 @@ For details, see [compatibility.md](https://github.com/modeverv/setPassToExcelDo
 
 ## Changelog
 
+### v2.0.5.1
+
+- Added an automated thread-safety test for concurrent encryption using a shared `Encrypt` instance.
+- Documented that encryption behavior is verified under parallel execution.
+
 ### v2.0.5
 
 - Added automated compatibility tests
