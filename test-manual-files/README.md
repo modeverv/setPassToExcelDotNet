@@ -89,24 +89,23 @@ set workbookDir to evidenceDir & "/workbooks"
 set sessionLog to evidenceDir & "/session.log"
 set checkValue to "日本語シート名保持確認"
 
-set testCases to {¬
-	{"simple_en.xlsx", "en", "pass", true}, ¬
-	{"simple_ja.xlsx", "ja", "パスワード", true}, ¬
-	{"japanese_en.xlsx", "en", "pass", false}, ¬
-	{"japanese_ja.xlsx", "ja", "パスワード", false}, ¬
-	{"excel_en.xlsm", "en", "pass", false}, ¬
-	{"excel_ja.xlsm", "ja", "パスワード", false}, ¬
-	{"excel_image_en.xlsx", "en", "pass", false}, ¬
-	{"excel_image_ja.xlsx", "ja", "パスワード", false} ¬
-	}
+set testCases to {}
+set end of testCases to {"simple_en.xlsx", "en", "pass", true}
+set end of testCases to {"simple_ja.xlsx", "ja", "パスワード", true}
+set end of testCases to {"japanese_en.xlsx", "en", "pass", false}
+set end of testCases to {"japanese_ja.xlsx", "ja", "パスワード", false}
+set end of testCases to {"excel_en.xlsm", "en", "pass", false}
+set end of testCases to {"excel_ja.xlsm", "ja", "パスワード", false}
+set end of testCases to {"excel_image_en.xlsx", "en", "pass", false}
+set end of testCases to {"excel_image_ja.xlsx", "ja", "パスワード", false}
 
 on appendLog(sessionLog, msg)
-	do shell script "printf '%s\n' " & quoted form of msg & " >> " & quoted form of sessionLog
+	do shell script ("printf '%s\\n' " & quoted form of msg & " >> " & quoted form of sessionLog)
 end appendLog
 
 on captureShot(pathToPng)
 	delay 1
-	do shell script "/usr/sbin/screencapture -x " & quoted form of pathToPng
+	do shell script ("/usr/sbin/screencapture -x " & quoted form of pathToPng)
 end captureShot
 
 on fileBase(fileName)
@@ -139,6 +138,8 @@ on closeActiveWorkbookIfAny()
 	end tell
 end closeActiveWorkbookIfAny
 
+appendLog(sessionLog, "== macOS Excel manual verification: " & ((current date) as text) & " ==")
+
 tell application "Microsoft Excel"
 	activate
 	set display alerts to false
@@ -154,30 +155,55 @@ repeat with tc in testCases
 	set openShot to evidenceDir & "/" & baseName & "-open.png"
 	set addedShot to evidenceDir & "/" & baseName & "-ja-sheet-added.png"
 	set reopenShot to evidenceDir & "/" & baseName & "-reopen.png"
+	set correctOpen to "FAIL"
+	set wrongRejected to "N/A"
+	set jaNameRetained to "FAIL"
+	set reopenAfterSave to "FAIL"
+	set noCorruption to "PASS"
 	set addedSheetName to ""
+	set noteText to ""
 	
+	my appendLog(sessionLog, "[" & fileName & "] start")
 	my closeActiveWorkbookIfAny()
+	
 	tell application "Microsoft Excel"
-		set wb to open workbook workbook file name workbookPath password correctPassword
-		delay 1
-		my captureShot(openShot)
-		
-		set addedSheetName to my uniqueJapaneseSheetName(wb)
-		make new worksheet at after last worksheet of wb
-		set name of active sheet to addedSheetName
-		set value of range "A1" of active sheet to checkValue
-		delay 1
-		my captureShot(addedShot)
-		save wb
-		close wb saving yes
-		
-		set wb2 to open workbook workbook file name workbookPath password correctPassword
-		activate object worksheet addedSheetName of wb2
-		set reopenedValue to value of range "A1" of active sheet
-		if reopenedValue is not checkValue then error "A1 mismatch after reopen"
-		delay 1
-		my captureShot(reopenShot)
-		close wb2 saving no
+		activate
+		set display alerts to false
+		try
+			set wb to open workbook workbook file name workbookPath password correctPassword
+			set correctOpen to "PASS"
+			delay 1
+			my captureShot(openShot)
+			
+			set addedSheetName to my uniqueJapaneseSheetName(wb)
+			set newWs to make new worksheet at after last worksheet of wb
+			set name of newWs to addedSheetName
+			set value of range "A1" of active sheet to checkValue
+			delay 1
+			my captureShot(addedShot)
+			save wb
+			close wb saving yes
+			
+			set wb2 to open workbook workbook file name workbookPath password correctPassword
+			set reopenAfterSave to "PASS"
+			activate object worksheet addedSheetName of wb2
+			set reopenedValue to value of range "A1" of active sheet
+			if reopenedValue is checkValue then
+				set jaNameRetained to "PASS"
+			else
+				set jaNameRetained to "FAIL"
+				set noteText to "A1 mismatch after reopen"
+			end if
+			delay 1
+			my captureShot(reopenShot)
+			close wb2 saving no
+		on error errMsg number errNo
+			set noCorruption to "FAIL"
+			set noteText to "Excel error " & errNo & ": " & errMsg
+			try
+				close active workbook saving no
+			end try
+		end try
 	end tell
 	
 	if shouldCheckWrongPassword then
@@ -185,14 +211,19 @@ repeat with tc in testCases
 		tell application "Microsoft Excel"
 			try
 				set wrongWb to open workbook workbook file name workbookPath password "__wrong_password__"
+				set wrongRejected to "FAIL"
 				close wrongWb saving no
-				error "wrong password unexpectedly opened"
-			on error
-				my appendLog(sessionLog, "[" & fileName & "] wrong-password-rejected=PASS")
+			on error errMsg number errNo
+				set wrongRejected to "PASS"
 			end try
 		end tell
 	end if
+	
+	my appendLog(sessionLog, "[" & fileName & "] password-type=" & passwordType & " correct-password-open=" & correctOpen & " wrong-password-rejected=" & wrongRejected & " japanese-sheet-name-retained=" & jaNameRetained & " reopen-after-save=" & reopenAfterSave & " no-corruption=" & noCorruption & " added-sheet=" & addedSheetName & " note=" & noteText)
 end repeat
+
+my closeActiveWorkbookIfAny()
+appendLog(sessionLog, "== completed: " & ((current date) as text) & " ==")
 ~~~
 
 # checklist追記ルール
