@@ -183,6 +183,13 @@ def add_japanese_sheet(doc):
 
 def save_document(doc, path, password):
     url = uno.systemPathToFileUrl(str(path))
+    if path.suffix.lower() == ".xlsm":
+        args = (
+            prop("Password", password),
+            prop("Overwrite", True),
+        )
+        doc.storeAsURL(url, args)
+        return
     args = (
         prop("FilterName", filter_name(path)),
         prop("Password", password),

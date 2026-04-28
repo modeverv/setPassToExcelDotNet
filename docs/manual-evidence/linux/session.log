@@ -1,0 +1,452 @@
+[2026-04-28 17:31:20 +0900] LibreOffice version: LibreOffice 24.2.7.2 420(Build:2)
+[2026-04-28 17:31:20 +0900] VNC/noVNC ports expected from docker-compose.yml: 5901/tcp and 6901/tcp
+[2026-04-28 17:31:20 +0900] noVNC URL checked from host configuration: http://localhost:6901/
+[2026-04-28 17:31:20 +0900] GUI helper tools are preinstalled: xdotool/import/xclip
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/simple_en.xlsx -> docs/manual-evidence/linux/workbooks/simple_en.xlsx
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/simple_ja.xlsx -> docs/manual-evidence/linux/workbooks/simple_ja.xlsx
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/japanese_en.xlsx -> docs/manual-evidence/linux/workbooks/japanese_en.xlsx
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/japanese_ja.xlsx -> docs/manual-evidence/linux/workbooks/japanese_ja.xlsx
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/excel_en.xlsm -> docs/manual-evidence/linux/workbooks/excel_en.xlsm
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/excel_ja.xlsm -> docs/manual-evidence/linux/workbooks/excel_ja.xlsm
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/excel_image_en.xlsx -> docs/manual-evidence/linux/workbooks/excel_image_en.xlsx
+[2026-04-28 17:31:20 +0900] copied work file: test-manual-files/excel_image_ja.xlsx -> docs/manual-evidence/linux/workbooks/excel_image_ja.xlsx
+[2026-04-28 17:31:20 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-wrong-simple_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22901;urp;StarOffice.ComponentContext
+[2026-04-28 17:31:23 +0900] wrong-password check PASS for simple_en.xlsx: rejected (com.sun.star.lang.IllegalArgumentException)
+[2026-04-28 17:31:23 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:31:23 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-wrong-simple_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22902;urp;StarOffice.ComponentContext
+[2026-04-28 17:31:25 +0900] wrong-password check PASS for simple_ja.xlsx: rejected (com.sun.star.lang.IllegalArgumentException)
+[2026-04-28 17:31:26 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:31:26 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-simple_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22000;urp;StarOffice.ComponentContext
+[2026-04-28 17:31:28 +0900] case start: simple_en.xlsx
+[2026-04-28 17:31:32 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:32 +0900] stdout: 33554973
+[2026-04-28 17:31:32 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:32 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:32 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:33 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-open.png
+[2026-04-28 17:31:33 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-open.png
+[2026-04-28 17:31:35 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:35 +0900] stdout: 33554973
+[2026-04-28 17:31:35 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:36 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:36 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:37 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-ja-sheet-added.png
+[2026-04-28 17:31:37 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-ja-sheet-added.png
+[2026-04-28 17:31:37 +0900] saved workbook: docs/manual-evidence/linux/workbooks/simple_en.xlsx with sheet 日本語シート
+[2026-04-28 17:31:40 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:40 +0900] stdout: 33557960
+[2026-04-28 17:31:40 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:40 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:40 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:41 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-reopen.png
+[2026-04-28 17:31:41 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-reopen.png
+[2026-04-28 17:31:41 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:31:41 +0900] case result: simple_en.xlsx: {'file': 'simple_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['simple_en-open.png', 'simple_en-ja-sheet-added.png', 'simple_en-reopen.png'], 'notes': []}
+[2026-04-28 17:31:41 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-simple_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22001;urp;StarOffice.ComponentContext
+[2026-04-28 17:31:43 +0900] case start: simple_ja.xlsx
+[2026-04-28 17:31:47 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:47 +0900] stdout: 33554973
+[2026-04-28 17:31:47 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:47 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:48 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:49 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-open.png
+[2026-04-28 17:31:49 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-open.png
+[2026-04-28 17:31:51 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:51 +0900] stdout: 33554973
+[2026-04-28 17:31:51 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:51 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:51 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:52 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-ja-sheet-added.png
+[2026-04-28 17:31:53 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-ja-sheet-added.png
+[2026-04-28 17:31:53 +0900] saved workbook: docs/manual-evidence/linux/workbooks/simple_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:31:55 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:31:55 +0900] stdout: 33557961
+[2026-04-28 17:31:55 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:31:55 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:31:55 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:31:56 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-reopen.png
+[2026-04-28 17:31:57 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-reopen.png
+[2026-04-28 17:31:57 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:31:57 +0900] case result: simple_ja.xlsx: {'file': 'simple_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['simple_ja-open.png', 'simple_ja-ja-sheet-added.png', 'simple_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:31:57 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-japanese_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22002;urp;StarOffice.ComponentContext
+[2026-04-28 17:31:59 +0900] case start: japanese_en.xlsx
+[2026-04-28 17:32:03 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:03 +0900] stdout: 33554973
+[2026-04-28 17:32:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:04 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-open.png
+[2026-04-28 17:32:04 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-open.png
+[2026-04-28 17:32:06 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:07 +0900] stdout: 33554973
+[2026-04-28 17:32:07 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:07 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:07 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:08 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-ja-sheet-added.png
+[2026-04-28 17:32:08 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-ja-sheet-added.png
+[2026-04-28 17:32:08 +0900] saved workbook: docs/manual-evidence/linux/workbooks/japanese_en.xlsx with sheet 日本語シート
+[2026-04-28 17:32:11 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:11 +0900] stdout: 33557971
+[2026-04-28 17:32:11 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:11 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:11 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:12 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-reopen.png
+[2026-04-28 17:32:12 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-reopen.png
+[2026-04-28 17:32:12 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:32:12 +0900] case result: japanese_en.xlsx: {'file': 'japanese_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['japanese_en-open.png', 'japanese_en-ja-sheet-added.png', 'japanese_en-reopen.png'], 'notes': []}
+[2026-04-28 17:32:12 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-japanese_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22003;urp;StarOffice.ComponentContext
+[2026-04-28 17:32:14 +0900] case start: japanese_ja.xlsx
+[2026-04-28 17:32:18 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:18 +0900] stdout: 33554973
+[2026-04-28 17:32:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:19 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-open.png
+[2026-04-28 17:32:20 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-open.png
+[2026-04-28 17:32:22 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:22 +0900] stdout: 33554973
+[2026-04-28 17:32:22 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:22 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:22 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:23 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-ja-sheet-added.png
+[2026-04-28 17:32:23 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-ja-sheet-added.png
+[2026-04-28 17:32:24 +0900] saved workbook: docs/manual-evidence/linux/workbooks/japanese_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:32:26 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:26 +0900] stdout: 33557972
+[2026-04-28 17:32:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:27 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-reopen.png
+[2026-04-28 17:32:28 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-reopen.png
+[2026-04-28 17:32:28 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:32:28 +0900] case result: japanese_ja.xlsx: {'file': 'japanese_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['japanese_ja-open.png', 'japanese_ja-ja-sheet-added.png', 'japanese_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:32:28 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22004;urp;StarOffice.ComponentContext
+[2026-04-28 17:32:30 +0900] case start: excel_en.xlsm
+[2026-04-28 17:32:34 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:34 +0900] stdout: 33554973
+[2026-04-28 17:32:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:35 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_en-open.png
+[2026-04-28 17:32:36 +0900] screenshot saved: docs/manual-evidence/linux/excel_en-open.png
+[2026-04-28 17:32:38 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:38 +0900] stdout: 33554973
+[2026-04-28 17:32:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:39 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_en-ja-sheet-added.png
+[2026-04-28 17:32:39 +0900] screenshot saved: docs/manual-evidence/linux/excel_en-ja-sheet-added.png
+[2026-04-28 17:32:40 +0900] case add/save failed: excel_en.xlsm: SfxBaseModel::impl_store <file:///workspace/docs/manual-evidence/linux/workbooks/excel_en.xlsm> failed: 0xc10(Error Area:Io Class:Write Code:16) at ./sfx2/source/doc/sfxbasemodel.cxx:3274
+[2026-04-28 17:32:40 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:32:40 +0900] case result: excel_en.xlsm: {'file': 'excel_en.xlsm', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'FAIL', 'reopen_after_save': 'FAIL', 'no_corruption': 'FAIL', 'evidence': ['excel_en-open.png', 'excel_en-ja-sheet-added.png', 'excel_en-reopen.png'], 'notes': ['macro prompt/bar was not blocking open/save/reopen in this run', 'add/save failed: SfxBaseModel::impl_store <file:///workspace/docs/manual-evidence/linux/workbooks/excel_en.xlsm> failed: 0xc10(Error Area:Io Class:Write Code:16) at ./sfx2/source/doc/sfxbasemodel.cxx:3274']}
+[2026-04-28 17:32:40 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22005;urp;StarOffice.ComponentContext
+[2026-04-28 17:32:42 +0900] case start: excel_ja.xlsm
+[2026-04-28 17:32:46 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:46 +0900] stdout: 33554973
+[2026-04-28 17:32:46 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:46 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:46 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:47 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_ja-open.png
+[2026-04-28 17:32:48 +0900] screenshot saved: docs/manual-evidence/linux/excel_ja-open.png
+[2026-04-28 17:32:50 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:50 +0900] stdout: 33554973
+[2026-04-28 17:32:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:51 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_ja-ja-sheet-added.png
+[2026-04-28 17:32:51 +0900] screenshot saved: docs/manual-evidence/linux/excel_ja-ja-sheet-added.png
+[2026-04-28 17:32:52 +0900] case add/save failed: excel_ja.xlsm: SfxBaseModel::impl_store <file:///workspace/docs/manual-evidence/linux/workbooks/excel_ja.xlsm> failed: 0xc10(Error Area:Io Class:Write Code:16) at ./sfx2/source/doc/sfxbasemodel.cxx:3274
+[2026-04-28 17:32:52 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:32:52 +0900] case result: excel_ja.xlsm: {'file': 'excel_ja.xlsm', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'FAIL', 'reopen_after_save': 'FAIL', 'no_corruption': 'FAIL', 'evidence': ['excel_ja-open.png', 'excel_ja-ja-sheet-added.png', 'excel_ja-reopen.png'], 'notes': ['macro prompt/bar was not blocking open/save/reopen in this run', 'add/save failed: SfxBaseModel::impl_store <file:///workspace/docs/manual-evidence/linux/workbooks/excel_ja.xlsm> failed: 0xc10(Error Area:Io Class:Write Code:16) at ./sfx2/source/doc/sfxbasemodel.cxx:3274']}
+[2026-04-28 17:32:52 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_image_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22006;urp;StarOffice.ComponentContext
+[2026-04-28 17:32:54 +0900] case start: excel_image_en.xlsx
+[2026-04-28 17:32:58 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:32:58 +0900] stdout: 33554973
+[2026-04-28 17:32:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:32:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:32:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:32:59 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-open.png
+[2026-04-28 17:32:59 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-open.png
+[2026-04-28 17:33:01 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:33:01 +0900] stdout: 33554973
+[2026-04-28 17:33:01 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:33:02 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:33:02 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:33:03 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-ja-sheet-added.png
+[2026-04-28 17:33:03 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-ja-sheet-added.png
+[2026-04-28 17:33:03 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_image_en.xlsx with sheet 日本語シート
+[2026-04-28 17:33:06 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:33:06 +0900] stdout: 33557942
+[2026-04-28 17:33:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:33:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:33:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:33:07 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-reopen.png
+[2026-04-28 17:33:07 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-reopen.png
+[2026-04-28 17:33:07 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:33:07 +0900] case result: excel_image_en.xlsx: {'file': 'excel_image_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_image_en-open.png', 'excel_image_en-ja-sheet-added.png', 'excel_image_en-reopen.png'], 'notes': []}
+[2026-04-28 17:33:07 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_image_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22007;urp;StarOffice.ComponentContext
+[2026-04-28 17:33:09 +0900] case start: excel_image_ja.xlsx
+[2026-04-28 17:33:13 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:33:13 +0900] stdout: 33554973
+[2026-04-28 17:33:13 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:33:14 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:33:14 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:33:15 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-open.png
+[2026-04-28 17:33:15 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-open.png
+[2026-04-28 17:33:17 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:33:17 +0900] stdout: 33554973
+[2026-04-28 17:33:17 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:33:17 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:33:17 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:33:18 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-ja-sheet-added.png
+[2026-04-28 17:33:19 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-ja-sheet-added.png
+[2026-04-28 17:33:19 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_image_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:33:21 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:33:21 +0900] stdout: 33557943
+[2026-04-28 17:33:21 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:33:21 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:33:22 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:33:23 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-reopen.png
+[2026-04-28 17:33:23 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-reopen.png
+[2026-04-28 17:33:23 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:33:23 +0900] case result: excel_image_ja.xlsx: {'file': 'excel_image_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_image_ja-open.png', 'excel_image_ja-ja-sheet-added.png', 'excel_image_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:33:23 +0900] summary written: docs/manual-evidence/linux/summary.md
+[2026-04-28 17:33:23 +0900] checklist appended: docs/manual-test-checklist.md
+[2026-04-28 17:33:23 +0900] overall result: FAIL
+[2026-04-28 17:33:54 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-probe-store --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=23105;urp;StarOffice.ComponentContext
+[2026-04-28 17:33:59 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:33:59 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-probe-storeAsURL-no-filter --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=23120;urp;StarOffice.ComponentContext
+[2026-04-28 17:34:09 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:34:09 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-probe-storeAsURL-filter --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=23117;urp;StarOffice.ComponentContext
+[2026-04-28 17:34:14 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:34:14 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-probe-storeAsURL-filterdata --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=23121;urp;StarOffice.ComponentContext
+[2026-04-28 17:34:19 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:34:53 +0900] LibreOffice version: LibreOffice 24.2.7.2 420(Build:2)
+[2026-04-28 17:34:53 +0900] VNC/noVNC ports expected from docker-compose.yml: 5901/tcp and 6901/tcp
+[2026-04-28 17:34:53 +0900] noVNC URL checked from host configuration: http://localhost:6901/
+[2026-04-28 17:34:53 +0900] GUI helper tools are preinstalled: xdotool/import/xclip
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/simple_en.xlsx -> docs/manual-evidence/linux/workbooks/simple_en.xlsx
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/simple_ja.xlsx -> docs/manual-evidence/linux/workbooks/simple_ja.xlsx
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/japanese_en.xlsx -> docs/manual-evidence/linux/workbooks/japanese_en.xlsx
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/japanese_ja.xlsx -> docs/manual-evidence/linux/workbooks/japanese_ja.xlsx
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/excel_en.xlsm -> docs/manual-evidence/linux/workbooks/excel_en.xlsm
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/excel_ja.xlsm -> docs/manual-evidence/linux/workbooks/excel_ja.xlsm
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/excel_image_en.xlsx -> docs/manual-evidence/linux/workbooks/excel_image_en.xlsx
+[2026-04-28 17:34:53 +0900] copied work file: test-manual-files/excel_image_ja.xlsx -> docs/manual-evidence/linux/workbooks/excel_image_ja.xlsx
+[2026-04-28 17:34:53 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-wrong-simple_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22901;urp;StarOffice.ComponentContext
+[2026-04-28 17:34:55 +0900] wrong-password check PASS for simple_en.xlsx: rejected (com.sun.star.lang.IllegalArgumentException)
+[2026-04-28 17:34:55 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:34:55 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-wrong-simple_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22902;urp;StarOffice.ComponentContext
+[2026-04-28 17:34:58 +0900] wrong-password check PASS for simple_ja.xlsx: rejected (com.sun.star.lang.IllegalArgumentException)
+[2026-04-28 17:34:58 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:34:58 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-simple_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22000;urp;StarOffice.ComponentContext
+[2026-04-28 17:35:00 +0900] case start: simple_en.xlsx
+[2026-04-28 17:35:04 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:04 +0900] stdout: 33554973
+[2026-04-28 17:35:04 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:04 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:04 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:05 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-open.png
+[2026-04-28 17:35:05 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-open.png
+[2026-04-28 17:35:07 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:07 +0900] stdout: 33554973
+[2026-04-28 17:35:07 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:08 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:08 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:09 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-ja-sheet-added.png
+[2026-04-28 17:35:09 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-ja-sheet-added.png
+[2026-04-28 17:35:09 +0900] saved workbook: docs/manual-evidence/linux/workbooks/simple_en.xlsx with sheet 日本語シート
+[2026-04-28 17:35:11 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:12 +0900] stdout: 33557960
+[2026-04-28 17:35:12 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:12 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:12 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:13 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_en-reopen.png
+[2026-04-28 17:35:13 +0900] screenshot saved: docs/manual-evidence/linux/simple_en-reopen.png
+[2026-04-28 17:35:13 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:35:13 +0900] case result: simple_en.xlsx: {'file': 'simple_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['simple_en-open.png', 'simple_en-ja-sheet-added.png', 'simple_en-reopen.png'], 'notes': []}
+[2026-04-28 17:35:13 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-simple_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22001;urp;StarOffice.ComponentContext
+[2026-04-28 17:35:15 +0900] case start: simple_ja.xlsx
+[2026-04-28 17:35:19 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:19 +0900] stdout: 33554973
+[2026-04-28 17:35:19 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:19 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:19 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:20 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-open.png
+[2026-04-28 17:35:21 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-open.png
+[2026-04-28 17:35:23 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:23 +0900] stdout: 33554973
+[2026-04-28 17:35:23 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:23 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:23 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:24 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-ja-sheet-added.png
+[2026-04-28 17:35:24 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-ja-sheet-added.png
+[2026-04-28 17:35:24 +0900] saved workbook: docs/manual-evidence/linux/workbooks/simple_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:35:27 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:27 +0900] stdout: 33557960
+[2026-04-28 17:35:27 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:27 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:27 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:28 +0900] $ import -window root /workspace/docs/manual-evidence/linux/simple_ja-reopen.png
+[2026-04-28 17:35:28 +0900] screenshot saved: docs/manual-evidence/linux/simple_ja-reopen.png
+[2026-04-28 17:35:29 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:35:29 +0900] case result: simple_ja.xlsx: {'file': 'simple_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['simple_ja-open.png', 'simple_ja-ja-sheet-added.png', 'simple_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:35:29 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-japanese_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22002;urp;StarOffice.ComponentContext
+[2026-04-28 17:35:31 +0900] case start: japanese_en.xlsx
+[2026-04-28 17:35:35 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:35 +0900] stdout: 33554973
+[2026-04-28 17:35:35 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:35 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:35 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:36 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-open.png
+[2026-04-28 17:35:36 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-open.png
+[2026-04-28 17:35:38 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:38 +0900] stdout: 33554973
+[2026-04-28 17:35:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:40 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-ja-sheet-added.png
+[2026-04-28 17:35:40 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-ja-sheet-added.png
+[2026-04-28 17:35:40 +0900] saved workbook: docs/manual-evidence/linux/workbooks/japanese_en.xlsx with sheet 日本語シート
+[2026-04-28 17:35:42 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:42 +0900] stdout: 33557971
+[2026-04-28 17:35:42 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:43 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:43 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:44 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_en-reopen.png
+[2026-04-28 17:35:44 +0900] screenshot saved: docs/manual-evidence/linux/japanese_en-reopen.png
+[2026-04-28 17:35:44 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:35:44 +0900] case result: japanese_en.xlsx: {'file': 'japanese_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['japanese_en-open.png', 'japanese_en-ja-sheet-added.png', 'japanese_en-reopen.png'], 'notes': []}
+[2026-04-28 17:35:44 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-japanese_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22003;urp;StarOffice.ComponentContext
+[2026-04-28 17:35:46 +0900] case start: japanese_ja.xlsx
+[2026-04-28 17:35:50 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:50 +0900] stdout: 33554973
+[2026-04-28 17:35:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:50 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:51 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-open.png
+[2026-04-28 17:35:52 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-open.png
+[2026-04-28 17:35:54 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:54 +0900] stdout: 33554973
+[2026-04-28 17:35:54 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:54 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:54 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:55 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-ja-sheet-added.png
+[2026-04-28 17:35:55 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-ja-sheet-added.png
+[2026-04-28 17:35:55 +0900] saved workbook: docs/manual-evidence/linux/workbooks/japanese_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:35:58 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:35:58 +0900] stdout: 33557971
+[2026-04-28 17:35:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:35:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:35:58 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:35:59 +0900] $ import -window root /workspace/docs/manual-evidence/linux/japanese_ja-reopen.png
+[2026-04-28 17:35:59 +0900] screenshot saved: docs/manual-evidence/linux/japanese_ja-reopen.png
+[2026-04-28 17:35:59 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:35:59 +0900] case result: japanese_ja.xlsx: {'file': 'japanese_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['japanese_ja-open.png', 'japanese_ja-ja-sheet-added.png', 'japanese_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:35:59 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22004;urp;StarOffice.ComponentContext
+[2026-04-28 17:36:01 +0900] case start: excel_en.xlsm
+[2026-04-28 17:36:06 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:36:06 +0900] stdout: 33554973
+[2026-04-28 17:36:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:36:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:36:06 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:36:07 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_en-open.png
+[2026-04-28 17:36:07 +0900] screenshot saved: docs/manual-evidence/linux/excel_en-open.png
+[2026-04-28 17:36:09 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:36:09 +0900] stdout: 33554973
+[2026-04-28 17:36:09 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:36:09 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:36:09 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:36:11 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_en-ja-sheet-added.png
+[2026-04-28 17:36:11 +0900] screenshot saved: docs/manual-evidence/linux/excel_en-ja-sheet-added.png
+[2026-04-28 17:36:16 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_en.xlsm with sheet 日本語シート
+[2026-04-28 17:36:30 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:36:30 +0900] stdout: 33558107
+[2026-04-28 17:36:30 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:36:30 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:36:30 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:36:32 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_en-reopen.png
+[2026-04-28 17:36:32 +0900] screenshot saved: docs/manual-evidence/linux/excel_en-reopen.png
+[2026-04-28 17:36:32 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:36:32 +0900] case result: excel_en.xlsm: {'file': 'excel_en.xlsm', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_en-open.png', 'excel_en-ja-sheet-added.png', 'excel_en-reopen.png'], 'notes': ['macro prompt/bar was not blocking open/save/reopen in this run']}
+[2026-04-28 17:36:32 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22005;urp;StarOffice.ComponentContext
+[2026-04-28 17:36:34 +0900] case start: excel_ja.xlsm
+[2026-04-28 17:36:38 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:36:38 +0900] stdout: 33554973
+[2026-04-28 17:36:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:36:38 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:36:39 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:36:40 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_ja-open.png
+[2026-04-28 17:36:40 +0900] screenshot saved: docs/manual-evidence/linux/excel_ja-open.png
+[2026-04-28 17:36:42 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:36:42 +0900] stdout: 33554973
+[2026-04-28 17:36:42 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:36:42 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:36:42 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:36:43 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_ja-ja-sheet-added.png
+[2026-04-28 17:36:44 +0900] screenshot saved: docs/manual-evidence/linux/excel_ja-ja-sheet-added.png
+[2026-04-28 17:36:49 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_ja.xlsm with sheet 日本語シート
+[2026-04-28 17:37:02 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:03 +0900] stdout: 33558107
+[2026-04-28 17:37:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:03 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:04 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_ja-reopen.png
+[2026-04-28 17:37:04 +0900] screenshot saved: docs/manual-evidence/linux/excel_ja-reopen.png
+[2026-04-28 17:37:04 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:37:04 +0900] case result: excel_ja.xlsm: {'file': 'excel_ja.xlsm', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_ja-open.png', 'excel_ja-ja-sheet-added.png', 'excel_ja-reopen.png'], 'notes': ['macro prompt/bar was not blocking open/save/reopen in this run']}
+[2026-04-28 17:37:04 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_image_en --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22006;urp;StarOffice.ComponentContext
+[2026-04-28 17:37:06 +0900] case start: excel_image_en.xlsx
+[2026-04-28 17:37:10 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:10 +0900] stdout: 33554973
+[2026-04-28 17:37:10 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:10 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:11 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:12 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-open.png
+[2026-04-28 17:37:12 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-open.png
+[2026-04-28 17:37:14 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:14 +0900] stdout: 33554973
+[2026-04-28 17:37:14 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:14 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:14 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:15 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-ja-sheet-added.png
+[2026-04-28 17:37:16 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-ja-sheet-added.png
+[2026-04-28 17:37:16 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_image_en.xlsx with sheet 日本語シート
+[2026-04-28 17:37:18 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:18 +0900] stdout: 33557943
+[2026-04-28 17:37:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:18 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:19 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_en-reopen.png
+[2026-04-28 17:37:20 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_en-reopen.png
+[2026-04-28 17:37:20 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:37:20 +0900] case result: excel_image_en.xlsx: {'file': 'excel_image_en.xlsx', 'password_type': 'en', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_image_en-open.png', 'excel_image_en-ja-sheet-added.png', 'excel_image_en-reopen.png'], 'notes': []}
+[2026-04-28 17:37:20 +0900] $ libreoffice -env:UserInstallation=file:///tmp/lo-profile-excel_image_ja --norestore --nofirststartwizard --nologo --nodefault --accept=socket,host=127.0.0.1,port=22007;urp;StarOffice.ComponentContext
+[2026-04-28 17:37:22 +0900] case start: excel_image_ja.xlsx
+[2026-04-28 17:37:26 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:26 +0900] stdout: 33554973
+[2026-04-28 17:37:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:26 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:27 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-open.png
+[2026-04-28 17:37:27 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-open.png
+[2026-04-28 17:37:29 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:29 +0900] stdout: 33554973
+[2026-04-28 17:37:29 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:30 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:30 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:31 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-ja-sheet-added.png
+[2026-04-28 17:37:31 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-ja-sheet-added.png
+[2026-04-28 17:37:31 +0900] saved workbook: docs/manual-evidence/linux/workbooks/excel_image_ja.xlsx with sheet 日本語シート
+[2026-04-28 17:37:34 +0900] $ xdotool search --onlyvisible --class libreoffice
+[2026-04-28 17:37:34 +0900] stdout: 33557942
+[2026-04-28 17:37:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowactivate %@
+[2026-04-28 17:37:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowsize %@ 1920 1030
+[2026-04-28 17:37:34 +0900] $ xdotool search --onlyvisible --class libreoffice windowmove %@ 0 28
+[2026-04-28 17:37:35 +0900] $ import -window root /workspace/docs/manual-evidence/linux/excel_image_ja-reopen.png
+[2026-04-28 17:37:35 +0900] screenshot saved: docs/manual-evidence/linux/excel_image_ja-reopen.png
+[2026-04-28 17:37:35 +0900] libreoffice stderr: Warning: failed to launch javaldx - java may not function correctly
+[2026-04-28 17:37:35 +0900] case result: excel_image_ja.xlsx: {'file': 'excel_image_ja.xlsx', 'password_type': 'ja', 'correct_password_open': 'PASS', 'wrong_password_rejected': 'N/A', 'japanese_sheet_name_retained': 'PASS', 'reopen_after_save': 'PASS', 'no_corruption': 'PASS', 'evidence': ['excel_image_ja-open.png', 'excel_image_ja-ja-sheet-added.png', 'excel_image_ja-reopen.png'], 'notes': []}
+[2026-04-28 17:37:35 +0900] summary written: docs/manual-evidence/linux/summary.md
+[2026-04-28 17:37:35 +0900] checklist appended: docs/manual-test-checklist.md
+[2026-04-28 17:37:35 +0900] overall result: PASS
