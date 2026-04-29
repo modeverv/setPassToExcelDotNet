@@ -2,6 +2,8 @@ name: test
 
 on:
   push:
+    tags:
+      - 'v*'
   pull_request:
   workflow_dispatch:
 
@@ -61,3 +63,19 @@ jobs:
       - name: Verify README samples
         run: dotnet test tests/ExcelEncryptor.Interop.Tests/ExcelEncryptor.Interop.Tests.csproj --filter FullyQualifiedName~ReadmeSamplesSmokeTests
 
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs:
+      - dotnet-matrix
+      - ubuntu-extended
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
