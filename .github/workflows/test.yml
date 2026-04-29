@@ -79,8 +79,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Build package project
+        run: dotnet build src/ExcelEncryptor/ExcelEncryptor.csproj -c Release
+
       - name: Pack NuGet package
-        run: dotnet pack src/ExcelEncryptor/ExcelEncryptor.csproj -c Release
+        run: dotnet pack src/ExcelEncryptor/ExcelEncryptor.csproj -c Release --no-build
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
