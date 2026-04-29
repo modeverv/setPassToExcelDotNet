@@ -74,8 +74,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Pack NuGet package
+        run: dotnet pack src/ExcelEncryptor/ExcelEncryptor.csproj -c Release
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
+          files: |
+            src/ExcelEncryptor/bin/Release/*.nupkg
